@@ -258,14 +258,10 @@ export class NavControllerBase extends Ion implements NavController {
     const leavingView = this.getActive();
     const enteringView = this._getEnteringView(ti, leavingView);
 
-    console.info('NATIVE SYNC', this._nativeSync);
-
-    /*
     this._nativeSync.actionPerformed('navigationTransitionStart', {
       entering: enteringView,
       leavingView: leavingView
-    })
-    */
+    });
 
     assert(leavingView || enteringView, 'Both leavingView and enteringView are null');
 

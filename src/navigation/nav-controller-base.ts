@@ -258,11 +258,6 @@ export class NavControllerBase extends Ion implements NavController {
     const leavingView = this.getActive();
     const enteringView = this._getEnteringView(ti, leavingView);
 
-    this._nativeSync.actionPerformed('navigationTransitionStart', {
-      entering: enteringView,
-      leavingView: leavingView
-    });
-
     assert(leavingView || enteringView, 'Both leavingView and enteringView are null');
 
     // Initialize enteringView
@@ -518,6 +513,14 @@ export class NavControllerBase extends Ion implements NavController {
       isRTL: this.config.platform.isRTL(),
       ev: opts.ev,
     };
+
+    this._nativeSync.actionPerformed('transition', {
+      animation: opts.animation,
+      direction: opts.direction,
+      duration: (opts.animate === false ? 0 : opts.duration),
+      easing: opts.easing,
+      isRTL: this.config.platform.isRTL()
+    });
 
     // create the transition animation from the TransitionController
     // this will either create the root transition, or add it as a child transition

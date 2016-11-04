@@ -13,7 +13,6 @@ declare var window;
 export class NativeSync {
 
   actionPerformed(actionName: string, args: any) {
-    console.info('NativeSync: ', actionName, args);
     return new Promise((resolve, reject) => {
       if(window.IonicNativeUI) {
         window.IonicNativeUI.action((resp) => {

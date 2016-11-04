@@ -4,6 +4,7 @@ import { App } from '../app/app';
 import { Config } from '../../config/config';
 import { DeepLinker } from '../../navigation/deep-linker';
 import { GestureController } from '../../gestures/gesture-controller';
+import { NativeSync } from '../../util/native-sync';
 import { Keyboard } from '../../util/keyboard';
 import { NavControllerBase } from '../../navigation/nav-controller-base';
 import { TransitionController } from '../../transitions/transition-controller';
@@ -26,9 +27,10 @@ export class OverlayPortal extends NavControllerBase {
     gestureCtrl: GestureController,
     transCtrl: TransitionController,
     @Optional() linker: DeepLinker,
-    viewPort: ViewContainerRef
+    viewPort: ViewContainerRef,
+    @Optional() private nativeSync: NativeSync,
   ) {
-    super(null, app, config, keyboard, elementRef, zone, renderer, cfr, gestureCtrl, transCtrl, linker);
+    super(null, app, config, keyboard, elementRef, zone, renderer, cfr, gestureCtrl, transCtrl, linker, nativeSync);
     this._isPortal = true;
     this._init = true;
     this.setViewport(viewPort);

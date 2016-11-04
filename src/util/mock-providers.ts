@@ -23,6 +23,7 @@ import { ViewController } from '../navigation/view-controller';
 
 import { NavControllerBase } from '../navigation/nav-controller-base';
 import { Haptic } from './haptic';
+import { NativeSync } from './native-sync';
 
 export const mockConfig = function(config?: any, url: string = '/', platform?: Platform) {
   const c = new Config();
@@ -255,6 +256,8 @@ export const mockNavController = function(): NavControllerBase {
 
   let linker = mockDeepLinker(null, app);
 
+  let nativeSync = mockNativeSync();
+
   let trnsCtrl = mockTrasitionController(config);
 
   let nav = new NavControllerBase(
@@ -268,7 +271,8 @@ export const mockNavController = function(): NavControllerBase {
     componentFactoryResolver,
     gestureCtrl,
     trnsCtrl,
-    linker
+    linker,
+    nativeSync
   );
 
   nav._viewInit = function(enteringView: ViewController) {
@@ -307,6 +311,8 @@ export const mockOverlayPortal = function(app: App, config: Config, platform: Pl
 
   let location = mockLocation();
 
+  let nativeSync = mockNativeSync();
+
   let deepLinker = new DeepLinker(app, serializer, location);
 
   return new OverlayPortal(
@@ -320,7 +326,8 @@ export const mockOverlayPortal = function(app: App, config: Config, platform: Pl
     gestureCtrl,
     null,
     deepLinker,
-    null
+    null,
+    nativeSync
   );
 };
 
@@ -349,6 +356,8 @@ export const mockTab = function(parentTabs: Tabs): Tab {
 
   let linker = mockDeepLinker(null, app);
 
+  let nativeSync = mockNativeSync();
+
   let tab = new Tab(
     parentTabs,
     app,
@@ -361,7 +370,8 @@ export const mockTab = function(parentTabs: Tabs): Tab {
     changeDetectorRef,
     gestureCtrl,
     null,
-    linker
+    linker,
+    nativeSync
   );
 
   tab.load = (opts: any, cb: Function) => {
@@ -397,6 +407,10 @@ export const mockDeepLinkConfig = function(links?: any[]): DeepLinkConfig {
     ]
   };
 };
+
+export const mockNativeSync = function() {
+  return new NativeSync();
+}
 
 export const mockHaptic = function (): Haptic {
   return new Haptic(null);

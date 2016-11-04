@@ -14,6 +14,7 @@ import { Ion } from '../components/ion';
 import { Keyboard } from '../util/keyboard';
 import { NavController } from './nav-controller';
 import { NavParams } from './nav-params';
+import { NativeSync } from '../util/native-sync';
 import { SwipeBackGesture } from './swipe-back';
 import { Transition } from '../transitions/transition';
 import { TransitionController } from '../transitions/transition-controller';
@@ -58,7 +59,8 @@ export class NavControllerBase extends Ion implements NavController {
     public _cfr: ComponentFactoryResolver,
     public _gestureCtrl: GestureController,
     public _trnsCtrl: TransitionController,
-    public _linker: DeepLinker
+    public _linker: DeepLinker,
+    public _nativeSync: NativeSync
   ) {
     super(config, elementRef, renderer);
 
@@ -248,12 +250,22 @@ export class NavControllerBase extends Ion implements NavController {
     if (!ti) {
       return false;
     }
+
     // set that this nav is actively transitioning
     this.setTransitioning(true);
 
     // Get entering and leaving views
     const leavingView = this.getActive();
     const enteringView = this._getEnteringView(ti, leavingView);
+
+    console.info('NATIVE SYNC', this._nativeSync);
+
+    /*
+    this._nativeSync.actionPerformed('navigationTransitionStart', {
+      entering: enteringView,
+      leavingView: leavingView
+    })
+    */
 
     assert(leavingView || enteringView, 'Both leavingView and enteringView are null');
 

@@ -10,6 +10,7 @@ import { NavControllerBase } from '../../navigation/nav-controller-base';
 import { NavOptions } from '../../navigation/nav-util';
 import { TabButton } from './tab-button';
 import { Tabs } from './tabs';
+import { NativeSync } from '../../util/native-sync';
 import { TransitionController } from '../../transitions/transition-controller';
 import { ViewController } from '../../navigation/view-controller';
 
@@ -256,10 +257,11 @@ export class Tab extends NavControllerBase {
     private _cd: ChangeDetectorRef,
     gestureCtrl: GestureController,
     transCtrl: TransitionController,
-    @Optional() private linker: DeepLinker
+    @Optional() private linker: DeepLinker,
+    @Optional() private nativeSync: NativeSync,
   ) {
     // A Tab is a NavController for its child pages
-    super(parent, app, config, keyboard, elementRef, zone, renderer, cfr, gestureCtrl, transCtrl, linker);
+    super(parent, app, config, keyboard, elementRef, zone, renderer, cfr, gestureCtrl, transCtrl, linker, nativeSync);
 
     this.id = parent.add(this);
 

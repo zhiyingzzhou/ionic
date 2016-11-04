@@ -21,6 +21,7 @@ import { Keyboard } from './util/keyboard';
 import { LoadingController } from './components/loading/loading';
 import { MenuController } from './components/menu/menu-controller';
 import { ModalController } from './components/modal/modal';
+import { NativeSync } from './util/native-sync';
 import { PickerController } from './components/picker/picker';
 import { Platform, setupPlatform, UserAgentToken, NavigatorPlatformToken, DocumentDirToken, DocLangToken } from './platform/platform';
 import { PlatformConfigToken, providePlatformConfigs } from './platform/platform-registry';
@@ -54,6 +55,7 @@ import { ToastCmp } from './components/toast/toast-component';
 export { Config, setupConfig, ConfigToken } from './config/config';
 export { Platform, setupPlatform, UserAgentToken, DocumentDirToken, DocLangToken, NavigatorPlatformToken } from './platform/platform';
 export { Haptic } from './util/haptic';
+export { NativeSync } from './util/native-sync';
 export { QueryParams, setupQueryParams, UrlToken } from './platform/query-params';
 export { DeepLinker } from './navigation/deep-linker';
 export { NavController } from './navigation/nav-controller';
@@ -176,6 +178,7 @@ export class IonicModule {
         Location,
         MenuController,
         ModalController,
+        NativeSync,
         PickerController,
         PopoverController,
         TapClick,

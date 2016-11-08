@@ -515,6 +515,8 @@ export class NavControllerBase extends Ion implements NavController {
     };
 
     this._nativeSync.action('transition', {
+      animate: opts.animate,
+      isNavRoot: opts.isNavRoot,
       animation: opts.animation,
       direction: opts.direction,
       duration: (opts.animate === false ? 0 : opts.duration),

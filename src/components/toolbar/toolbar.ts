@@ -4,7 +4,7 @@ import { Config } from '../../config/config';
 import { Ion } from '../ion';
 import { ToolbarTitle } from './toolbar-title';
 import { ViewController } from '../../navigation/view-controller';
-
+import { NativeSync } from '../../util/native-sync';
 
 /**
  * @name Header
@@ -89,7 +89,7 @@ export class Footer extends Ion {
 export class ToolbarBase extends Ion {
   private _title: ToolbarTitle;
 
-  constructor(config: Config, elementRef: ElementRef, renderer: Renderer) {
+  constructor(config: Config, elementRef: ElementRef, renderer: Renderer, public nativeSync: NativeSync) {
     super(config, elementRef, renderer);
   }
 
@@ -284,9 +284,10 @@ export class Toolbar extends ToolbarBase {
     @Optional() viewCtrl: ViewController,
     config: Config,
     elementRef: ElementRef,
-    renderer: Renderer
+    renderer: Renderer,
+    nativeSync: NativeSync
   ) {
-    super(config, elementRef, renderer);
+    super(config, elementRef, renderer, nativeSync);
 
     this.mode = config.get('mode');
     this._sbPadding = config.getBoolean('statusbarPadding');

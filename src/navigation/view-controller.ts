@@ -461,6 +461,7 @@ export class ViewController {
       this._detached = false;
     }
 
+    this._nb && this._nb.willEnter();
     this.willEnter.emit(null);
     this._lifecycle('WillEnter');
   }

@@ -514,7 +514,7 @@ export class NavControllerBase extends Ion implements NavController {
       ev: opts.ev,
     };
 
-    this._nativeSync.actionPerformed('transition', {
+    this._nativeSync.action('transition', {
       animation: opts.animation,
       direction: opts.direction,
       duration: (opts.animate === false ? 0 : opts.duration),
@@ -764,14 +764,27 @@ export class NavControllerBase extends Ion implements NavController {
     }
   }
 
+  _nativeSyncLifecycle(event, view) {
+    let viewNavbar = view.getNavbar();
+    let title = viewNavbar && viewNavbar.getTitleText();
+
+    this._nativeSync.action(event, {
+      title: title
+    });
+  }
+
   _willLoad(view: ViewController) {
     assert(this.isTransitioning(), 'nav controller should be transitioning');
+
+    this._nativeSyncLifecycle('viewWillLoad', view);
 
     view._willLoad();
   }
 
   _didLoad(view: ViewController) {
     assert(this.isTransitioning(), 'nav controller should be transitioning');
+
+    this._nativeSyncLifecycle('viewDidLoad', view);
 
     view._didLoad();
     this.viewDidLoad.emit(view);
@@ -781,6 +794,8 @@ export class NavControllerBase extends Ion implements NavController {
   _willEnter(view: ViewController) {
     assert(this.isTransitioning(), 'nav controller should be transitioning');
 
+    this._nativeSyncLifecycle('viewWillEnter', view);
+
     view._willEnter();
     this.viewWillEnter.emit(view);
     this._app.viewWillEnter.emit(view);
@@ -788,6 +803,8 @@ export class NavControllerBase extends Ion implements NavController {
 
   _didEnter(view: ViewController) {
     assert(this.isTransitioning(), 'nav controller should be transitioning');
+
+    this._nativeSyncLifecycle('viewDidEnter', view);
 
     view._didEnter();
     this.viewDidEnter.emit(view);
@@ -797,6 +814,8 @@ export class NavControllerBase extends Ion implements NavController {
   _willLeave(view: ViewController) {
     assert(this.isTransitioning(), 'nav controller should be transitioning');
 
+    this._nativeSyncLifecycle('viewWillLeave', view);
+
     view._willLeave();
     this.viewWillLeave.emit(view);
     this._app.viewWillLeave.emit(view);
@@ -805,6 +824,8 @@ export class NavControllerBase extends Ion implements NavController {
   _didLeave(view: ViewController) {
     assert(this.isTransitioning(), 'nav controller should be transitioning');
 
+    this._nativeSyncLifecycle('viewDidLeave', view);
+
     view._didLeave();
     this.viewDidLeave.emit(view);
     this._app.viewDidLeave.emit(view);
@@ -812,6 +833,8 @@ export class NavControllerBase extends Ion implements NavController {
 
   _willUnload(view: ViewController) {
     assert(this.isTransitioning(), 'nav controller should be transitioning');
+
+    this._nativeSyncLifecycle('viewWillUnload', view);
 
     view._willUnload();
     this.viewWillUnload.emit(view);

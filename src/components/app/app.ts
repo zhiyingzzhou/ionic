@@ -9,7 +9,6 @@ import { NavController } from '../../navigation/nav-controller';
 import { Platform } from '../../platform/platform';
 import { ViewController } from '../../navigation/view-controller';
 
-
 /**
  * @name App
  * @description
@@ -66,7 +65,7 @@ export class App {
 
   constructor(
     private _config: Config,
-    private _platform: Platform
+    private _platform: Platform,
   ) {
     // listen for hardware back button events
     // register this back button action with a default priority

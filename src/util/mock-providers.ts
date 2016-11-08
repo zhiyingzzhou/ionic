@@ -33,13 +33,19 @@ export const mockConfig = function(config?: any, url: string = '/', platform?: P
   return c;
 };
 
+export const mockPlatform = function() {
+  return new Platform();
+};
+
+export const mockNativeSync = function() {
+  let platform = mockPlatform();
+  return new NativeSync(platform, null);
+}
+
 export const mockQueryParams = function(url: string = '/') {
   return new QueryParams(url);
 };
 
-export const mockPlatform = function() {
-  return new Platform();
-};
 
 export const mockApp = function(config?: Config, platform?: Platform) {
   platform = platform || mockPlatform();
@@ -407,10 +413,6 @@ export const mockDeepLinkConfig = function(links?: any[]): DeepLinkConfig {
     ]
   };
 };
-
-export const mockNativeSync = function() {
-  return new NativeSync();
-}
 
 export const mockHaptic = function (): Haptic {
   return new Haptic(null);

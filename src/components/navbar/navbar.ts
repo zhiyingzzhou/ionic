@@ -6,6 +6,7 @@ import { isTrueProperty } from '../../util/util';
 import { NavController } from '../../navigation/nav-controller';
 import { ToolbarBase } from '../toolbar/toolbar';
 import { ViewController } from '../../navigation/view-controller';
+import { NativeSync } from '../../util/native-sync';
 
 
 /**
@@ -121,9 +122,10 @@ export class Navbar extends ToolbarBase {
     @Optional() private navCtrl: NavController,
     config: Config,
     elementRef: ElementRef,
-    renderer: Renderer
+    renderer: Renderer,
+    nativeSync: NativeSync
   ) {
-    super(config, elementRef, renderer);
+    super(config, elementRef, renderer, nativeSync);
 
     this.mode = config.get('mode');
 
@@ -151,12 +153,20 @@ export class Navbar extends ToolbarBase {
     this._renderer.setText(this._bbTxt.nativeElement, text);
   }
 
+  didEnter() {
+
+  }
+
   /**
    * @private
    */
-  didEnter() {
+  willEnter() {
     try {
-      this._app.setTitle(this.getTitleText());
+      let titleText = this.getTitleText();
+      this._app.setTitle(titleText);
+      this.nativeSync.action('setTitle', {
+        text: titleText
+      })
     } catch (e) {
       console.error(e);
     }

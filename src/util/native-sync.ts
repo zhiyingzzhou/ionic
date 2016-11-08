@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 
+import { App } from '../components/app/app';
 import { Platform } from '../platform/platform';
 
 declare var window;
@@ -11,17 +12,38 @@ declare var window;
 
 @Injectable()
 export class NativeSync {
+  _actionQueue: Array<any> = [];
 
-  actionPerformed(actionName: string, args: any) {
-    return new Promise((resolve, reject) => {
+  constructor(platform: Platform, app: App) {
+    platform.ready().then(() => {
+      this._sendMessages();
+
       if(window.IonicNativeUI) {
-        window.IonicNativeUI.action((resp) => {
-          resolve(resp);
+        window.IonicNativeUI.onNavPop((info) => {
+          console.log('Inside Ionic: Nav Pop', info);
+          app.getRootNav().pop();
         }, (err) => {
-          reject(err);
-        }, actionName, args);
+          console.error('Inside Ionic: Unable to nav pop', err);
+        });
       }
     });
+  }
+
+  _sendMessages() {
+    if(!window.IonicNativeUI) { return; }
+
+    for(let message of this._actionQueue) {
+      window.IonicNativeUI.action(() => {}, (err) => {}, message.actionName, message.args);
+    }
+  }
+
+  action(actionName: string, args: any) {
+    this._actionQueue.push({
+      actionName: actionName,
+      args: args
+    });
+
+    this._sendMessages();
   }
 
 }

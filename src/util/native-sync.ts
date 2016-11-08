@@ -35,6 +35,8 @@ export class NativeSync {
     for(let message of this._actionQueue) {
       window.IonicNativeUI.action(() => {}, (err) => {}, message.actionName, message.args);
     }
+
+    this._actionQueue = [];
   }
 
   action(actionName: string, args: any) {

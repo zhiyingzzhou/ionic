@@ -514,15 +514,6 @@ export class NavControllerBase extends Ion implements NavController {
       ev: opts.ev,
     };
 
-    this._nativeSync.action('transition', {
-      animate: opts.animate,
-      isNavRoot: opts.isNavRoot,
-      animation: opts.animation,
-      direction: opts.direction,
-      duration: (opts.animate === false ? 0 : opts.duration),
-      easing: opts.easing,
-      isRTL: this.config.platform.isRTL()
-    });
 
     // create the transition animation from the TransitionController
     // this will either create the root transition, or add it as a child transition
@@ -559,6 +550,18 @@ export class NavControllerBase extends Ion implements NavController {
       // lowest level transition, so kick it off and let it bubble up to start all of them
       transition.start();
     }
+
+
+    this._nativeSync.action('transition', {
+      enteringTitle: enteringView.getNavbar() && enteringView.getNavbar().getTitleText() || '',
+      animate: opts.animate,
+      isNavRoot: opts.isNavRoot,
+      animation: opts.animation,
+      direction: opts.direction,
+      duration: (opts.animate === false ? 0 : opts.duration),
+      easing: opts.easing,
+      isRTL: this.config.platform.isRTL()
+    });
   }
 
   _trnsStart(transition: Transition, enteringView: ViewController, leavingView: ViewController, opts: NavOptions, resolve: TransitionResolveFn) {

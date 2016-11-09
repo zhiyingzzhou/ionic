@@ -33,6 +33,7 @@ export class NativeSync {
     if(!window.IonicNativeUI) { return; }
 
     for(let message of this._actionQueue) {
+      console.log('Ionic JS - NativeSync._sendMessages - action', message.actionName, message.args);
       window.IonicNativeUI.action(() => {}, (err) => {}, message.actionName, message.args);
     }
 

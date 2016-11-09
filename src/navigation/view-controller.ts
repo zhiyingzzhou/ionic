@@ -401,6 +401,10 @@ export class ViewController {
     return this._nb;
   }
 
+  getTitleText(): string {
+    return this._nb && this._nb.getTitleText().trim() || '';
+  }
+
   /**
    * Find out if the current component has a NavBar or not. Be sure
    * to wrap this in an `ionViewWillEnter` method in order to make sure

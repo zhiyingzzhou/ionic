@@ -16,6 +16,14 @@ export class NativeSync {
 
   constructor(platform: Platform, app: App) {
     platform.ready().then(() => {
+      let activeNav = app.getActiveNav();
+      let activeVC = activeNav && activeNav.getActive();
+      let activeTitle = activeVC && activeVC.getTitleText();
+
+      this.action('setRootTitle', {
+        title: activeTitle
+      });
+
       this._sendMessages();
 
       if(window.IonicNativeUI) {

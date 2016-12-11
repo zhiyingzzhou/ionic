@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, ElementRef, Input, NgZone, OnDestro
 
 import { Content } from '../content/content';
 import { DomController } from '../../util/dom-controller';
-import { ImgLoader, ImgResponseMessage } from './img-loader';
+import { ImgLoader } from './img-loader';
 import { isPresent, isTrueProperty } from '../../util/util';
 import { Platform } from '../../platform/platform';
 
@@ -134,8 +134,6 @@ export class Img implements OnDestroy {
   /** @internal */
   _cache: boolean = true;
   /** @internal */
-  _cb: Function;
-  /** @internal */
   _bounds: any;
   /** @internal */
   _rect: any;
@@ -235,13 +233,10 @@ export class Img implements OnDestroy {
         console.debug(`request ${this._src} ${Date.now()}`);
         this._requestingSrc = this._src;
 
-        // create a callback for when we get data back from the web worker
-        this._cb = (msg: ImgResponseMessage) => {
-          this._loadResponse(msg);
-        };
-
         // post the message to the web worker
-        this._ldr.load(this._src, this._cache, this._cb);
+        this._ldr.load(this._src, this._cache, (status, msg, datauri) => {
+          this._loadResponse(status, msg, datauri);
+        });
 
         // set the dimensions of the image if we do have different data
         this._setDims();
@@ -263,18 +258,18 @@ export class Img implements OnDestroy {
     }
   }
 
-  private _loadResponse(msg: ImgResponseMessage) {
+  private _loadResponse(status: number, msg: string, datauri: string) {
     this._requestingSrc = null;
 
-    if (msg.status === 200) {
+    if (status === 200) {
       // success :)
-      this._tmpDataUri = msg.data;
+      this._tmpDataUri = datauri;
       this.update();
 
     } else {
       // error :(
-      if (msg.status) {
-        console.error(`img, status: ${msg.status} ${msg.msg}`);
+      if (status) {
+        console.error(`img, status: ${status} ${msg}`);
       }
       this._renderedSrc = this._tmpDataUri = null;
       this._dom.write(() => {
@@ -413,8 +408,6 @@ export class Img implements OnDestroy {
    * @private
    */
   ngOnDestroy() {
-    this._ldr.cancelLoad(this._cb);
-    this._cb = null;
     this._content && this._content.removeImg(this);
   }
 

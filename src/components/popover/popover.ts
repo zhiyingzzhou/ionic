@@ -9,7 +9,23 @@ import { ViewController } from '../../navigation/view-controller';
 
 
 /**
- * @private
+ * @name Popover
+ * @description
+ * A Popover is a dialog that appears on top of the current page.
+ * It can be used for anything, but generally it is used for overflow
+ * actions that don't fit in the navigation bar.
+ *
+ * Instances of the Popover component are created by calling the `create()` function
+ * of the [PopoverController class](../PopoverController). The Popover is displayed
+ * to the user by calling `present()` on the Popover instance.
+ * 
+ * @usage
+ * For a complete usage example, see the [PopoverController API docs](../PopoverController). 
+ *
+ * @demo /docs/v2/demos/src/popover/basic 
+ * @see {@link /docs/v2/components#popovers Popover Component Docs}
+ * @see {@link ../PopoverController/ PopoverController API Docs} 
+ *
  */
 export class Popover extends ViewController {
   private _app: App;
@@ -49,9 +65,7 @@ export class Popover extends ViewController {
 /**
  * @name PopoverController
  * @description
- * A Popover is a dialog that appears on top of the current page.
- * It can be used for anything, but generally it is used for overflow
- * actions that don't fit in the navigation bar.
+ * The PopoverController class is used to create instances of the Popover component.
  *
  * ### Creating
  * A popover can be created by calling the `create` method. The view
@@ -62,7 +76,7 @@ export class Popover extends ViewController {
  * below for all available options.
  *
  * ### Presenting
- * To present a popover, call the `present` method on a PopoverController instance.
+ * To present a popover, call the `present` method on a Popover instance.
  * In order to position the popover relative to the element clicked, a click event
  * needs to be passed into the options of the the `present method. If the event
  * is not passed, the popover will be positioned in the center of the current
@@ -81,7 +95,7 @@ export class Popover extends ViewController {
  * > Note that after the component is dismissed, it will not be usable anymore and
  * another one must be created. This can be avoided by wrapping the creation and
  * presentation of the component in a reusable function as shown in the [usage](#usage)
- * section below.
+ * section below. 
  *
  * @usage
  *
@@ -95,6 +109,8 @@ export class Popover extends ViewController {
  * ```
  *
  * ```ts
+ * import { PopoverController } from 'ionic-angular';
+ *
  * @Component({})
  * class MyPage {
  *   constructor(public popoverCtrl: PopoverController) {}
@@ -131,9 +147,9 @@ export class Popover extends ViewController {
  *     this.viewCtrl.dismiss();
  *   }
  * }
- * ```
- * @advanced
- * Popover Options
+ * ``` 
+ *
+ * ## Popover Options
  *
  * | Option                | Type       | Description                                                                                                      |
  * |-----------------------|------------|------------------------------------------------------------------------------------------------------------------|
@@ -143,7 +159,10 @@ export class Popover extends ViewController {
  *
  *
  *
- * @demo /docs/v2/demos/src/popover/
+ * @demo /docs/v2/demos/src/popover/basic
+ * @see {@link /docs/v2/components#popovers Popover Component Docs}
+ * @see {@link ../Popover/ Popover API Docs} 
+ *
  */
 @Injectable()
 export class PopoverController {

@@ -7,7 +7,8 @@ import { Ion } from '../ion';
   * @name Chip
   * @module ionic
   * @description
-  * Chips represent complex entities in small blocks, such as a contact.
+  * Chips represent complex entities in small blocks, such as a contact, and are mainly
+  * used as a user interface component for Material Design (Android) apps.
   *
   *
   * @usage
@@ -88,7 +89,7 @@ import { Ion } from '../ion';
   * }
   * ```
   *
-  * @demo /docs/v2/demos/src/chip/
+  * @demo /docs/v2/demos/src/chip/basic
  **/
 @Directive({
   selector: 'ion-chip'
@@ -104,7 +105,7 @@ export class Chip extends Ion {
   }
 
   /**
-   * @input {string} The mode to apply to this component.
+   * @input {string} The mode to apply to this component. Mode can be `ios`, `wp`, or `md`.
    */
   @Input()
   set mode(val: string) {

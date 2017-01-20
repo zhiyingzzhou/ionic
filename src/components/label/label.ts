@@ -8,12 +8,14 @@ import { Ion } from '../ion';
  * @name Label
  * @description
  * Labels are placed inside of an `ion-item` element and can be used
- * to describe an `ion-input`, `ion-toggle`, `ion-checkbox`, and more.
+ * to describe an `ion-input`, `ion-toggle`, `ion-checkbox`, and more. 
+ * There are several different styles of Labels available, each with a
+ * different look and behavior. For more information, see [Attributes](#attributes) 
+ * below.
  *
  * @property [fixed] - A persistent label that sits next the input.
  * @property [floating] - A label that will float above the input if the input is empty or loses focus.
  * @property [stacked] - A stacked label will always appear on top of the input.
-
  *
  * @usage
  * ```html
@@ -23,32 +25,17 @@ import { Ion } from '../ion';
  *  </ion-item>
  *
  *  <ion-item>
- *    <ion-label fixed>Website</ion-label>
- *    <ion-input type="url"></ion-input>
- *  </ion-item>
- *
- *  <ion-item>
- *    <ion-label floating>Email</ion-label>
- *    <ion-input type="email"></ion-input>
- *  </ion-item>
- *
- *  <ion-item>
- *    <ion-label stacked>Phone</ion-label>
- *    <ion-input type="tel"></ion-input>
- *  </ion-item>
- *
- *  <ion-item>
- *    <ion-label>Toggle</ion-label>
+ *    <ion-label floating>Toggle</ion-label>
  *    <ion-toggle></ion-toggle>
  *  </ion-item>
  *
  *  <ion-item>
- *    <ion-label>Checkbox</ion-label>
+ *    <ion-label stacked>Checkbox</ion-label>
  *    <ion-checkbox></ion-checkbox>
  *  </ion-item>
  * ```
  *
- * @demo /docs/v2/demos/src/label/
+ * @demo /docs/v2/demos/src/label/basic
  * @see {@link ../../../../components#inputs Input Component Docs}
  * @see {@link ../../input/Input Input API Docs}
  *
@@ -69,7 +56,7 @@ export class Label extends Ion {
   }
 
   /**
-   * @input {string} The mode to apply to this component.
+   * @input {string} The mode to apply to this component. Mode can be `ios`, `wp`, or `md`.
    */
   @Input()
   set mode(val: string) {

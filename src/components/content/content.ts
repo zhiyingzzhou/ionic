@@ -2,14 +2,14 @@ import { ChangeDetectionStrategy, Component, ElementRef, EventEmitter, Input, Ng
 
 import { App } from '../app/app';
 import { Config } from '../../config/config';
-import { DomController } from '../../util/dom-controller';
+import { DomController } from '../../platform/dom-controller';
 import { Img } from '../img/img';
 import { Ion } from '../ion';
 import { isTrueProperty, assert, removeArrayItem } from '../../util/util';
-import { Keyboard } from '../../util/keyboard';
+import { Keyboard } from '../../platform/keyboard';
+import { Platform } from '../../platform/platform';
 import { ScrollView, ScrollEvent } from '../../util/scroll-view';
 import { Tabs } from '../tabs/tabs';
-import { transitionEnd } from '../../util/dom';
 import { ViewController } from '../../navigation/view-controller';
 
 export { ScrollEvent } from '../../util/scroll-view';
@@ -50,7 +50,7 @@ export { ScrollEvent } from '../../util/scroll-view';
  *
  * @advanced
  *
- * Resizing the content
+ * ### Resizing the Content
  *
  *
  * ```ts
@@ -81,7 +81,7 @@ export { ScrollEvent } from '../../util/scroll-view';
  * ```
  *
  *
- * Scroll to a specific position
+ * ### Scrolling to a Specific Position
  *
  * ```ts
  * import { Component, ViewChild } from '@angular/core';
@@ -101,6 +101,19 @@ export { ScrollEvent } from '../../util/scroll-view';
  *     this.content.scrollTo(0, 500, 200);
  *   }
  * }
+ * ```
+ *
+ * ### Disabling the "Bounce" Effect
+ *
+ * By default, when the user reaches the top or bottom of the content in `ion-content`
+ * there is a "bounce" effect that signals to the user that they've reached the limit of
+ * the scrollable area. This is standard behavior on mobile, but in some cases may not be
+ * desirable. To disable this effect, add the `no-bounce` attribute to `ion-content`.
+ *
+ * ```ts
+ * <ion-content no-bounce>
+ *   Your Non-Bouncing Content Here!
+ * </ion-content>
  * ```
  *
  */
@@ -167,6 +180,10 @@ export class Content extends Ion implements OnDestroy, OnInit {
   _fixedEle: HTMLElement;
   /** @internal */
   _imgs: Img[] = [];
+  /** @internal */
+  _viewCtrlReadSub: any;
+  /** @internal */
+  _viewCtrlWriteSub: any;
 
   private _imgReqBfr: number;
   private _imgRndBfr: number;
@@ -242,6 +259,9 @@ export class Content extends Ion implements OnDestroy, OnInit {
   get scrollTop(): number {
     return this._scroll.ev.scrollTop;
   }
+  /**
+   * @param {number} top
+   */
   set scrollTop(top: number) {
     this._scroll.setTop(top);
   }
@@ -254,6 +274,10 @@ export class Content extends Ion implements OnDestroy, OnInit {
   get scrollLeft(): number {
     return this._scroll.ev.scrollLeft;
   }
+
+  /**
+   * @param {number} top
+   */
   set scrollLeft(top: number) {
     this._scroll.setLeft(top);
   }
@@ -302,27 +326,18 @@ export class Content extends Ion implements OnDestroy, OnInit {
    */
   @Output() ionScrollEnd: EventEmitter<ScrollEvent> = new EventEmitter<ScrollEvent>();
 
-  /**
-   * @private
-   */
-  @Output() readReady: EventEmitter<any> = new EventEmitter<any>();
-
-  /**
-   * @private
-   */
-  @Output() writeReady: EventEmitter<any> = new EventEmitter<any>();
-
 
   constructor(
     config: Config,
+    private _plt: Platform,
+    private _dom: DomController,
     elementRef: ElementRef,
     renderer: Renderer,
     public _app: App,
     public _keyboard: Keyboard,
     public _zone: NgZone,
     @Optional() viewCtrl: ViewController,
-    @Optional() public _tabs: Tabs,
-    private _dom: DomController
+    @Optional() public _tabs: Tabs
   ) {
     super(config, elementRef, renderer, 'content');
 
@@ -330,13 +345,28 @@ export class Content extends Ion implements OnDestroy, OnInit {
     this._imgReqBfr = config.getNumber('imgRequestBuffer', 1400);
     this._imgRndBfr = config.getNumber('imgRenderBuffer', 400);
     this._imgVelMax = config.getNumber('imgVelocityMax', 3);
+    this._scroll = new ScrollView(_plt, _dom);
 
     if (viewCtrl) {
+      // content has a view controller
       viewCtrl._setIONContent(this);
       viewCtrl._setIONContentRef(elementRef);
-    }
 
-    this._scroll = new ScrollView(_dom);
+      this._viewCtrlReadSub = viewCtrl.readReady.subscribe(() => {
+        this._viewCtrlReadSub.unsubscribe();
+        this._readDimensions();
+      });
+
+      this._viewCtrlWriteSub = viewCtrl.writeReady.subscribe(() => {
+        this._viewCtrlWriteSub.unsubscribe();
+        this._writeDimensions();
+      });
+
+    } else {
+      // content does not have a view controller
+      _dom.read(this._readDimensions.bind(this));
+      _dom.write(this._writeDimensions.bind(this));
+    }
   }
 
   /**
@@ -382,6 +412,9 @@ export class Content extends Ion implements OnDestroy, OnInit {
    */
   ngOnDestroy() {
     this._scLsn && this._scLsn();
+    this._viewCtrlReadSub && this._viewCtrlReadSub.unsubscribe();
+    this._viewCtrlWriteSub && this._viewCtrlWriteSub.unsubscribe();
+    this._viewCtrlReadSub = this._viewCtrlWriteSub = null;
     this._scroll && this._scroll.destroy();
     this._scrollEle = this._fixedEle = this._footerEle = this._scLsn = this._scroll = null;
   }
@@ -396,8 +429,8 @@ export class Content extends Ion implements OnDestroy, OnInit {
   /**
    * @private
    */
-  onScrollElementTransitionEnd(callback: Function) {
-    transitionEnd(this._scrollEle, callback);
+  onScrollElementTransitionEnd(callback: {(ev: TransitionEvent): void}) {
+    this._plt.transitionEnd(this._scrollEle, callback);
   }
 
   /**
@@ -456,6 +489,10 @@ export class Content extends Ion implements OnDestroy, OnInit {
   get fullscreen(): boolean {
     return !!this._fullscreen;
   }
+
+  /**
+   * @param {boolean} val
+   */
   set fullscreen(val: boolean) {
     this._fullscreen = isTrueProperty(val);
   }
@@ -565,15 +602,15 @@ export class Content extends Ion implements OnDestroy, OnInit {
    * after dynamically adding headers, footers, or tabs.
    */
   resize() {
-    this._dom.read(this.readDimensions, this);
-    this._dom.write(this.writeDimensions, this);
+    this._dom.read(this._readDimensions.bind(this));
+    this._dom.write(this._writeDimensions.bind(this));
   }
 
   /**
    * @private
    * DOM READ
    */
-  readDimensions() {
+  private _readDimensions() {
     let cachePaddingTop = this._pTop;
     let cachePaddingRight = this._pRight;
     let cachePaddingBottom = this._pBottom;
@@ -708,15 +745,13 @@ export class Content extends Ion implements OnDestroy, OnInit {
 
     // initial imgs refresh
     this.imgsUpdate();
-
-    this.readReady.emit();
   }
 
   /**
    * @private
    * DOM WRITE
    */
-  writeDimensions() {
+  private _writeDimensions() {
     if (!this._dirty) {
       console.debug('Skipping writeDimensions');
       return;
@@ -798,8 +833,6 @@ export class Content extends Ion implements OnDestroy, OnInit {
         this._tabs.setTabbarPosition(-1, 0);
       }
     }
-
-    this.writeReady.emit();
   }
 
   /**

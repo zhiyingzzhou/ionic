@@ -1,7 +1,7 @@
 import { Directive, ElementRef, EventEmitter, Host, Input, NgZone, Output } from '@angular/core';
 
 import { Content, ScrollEvent } from '../content/content';
-import { DomController } from '../../util/dom-controller';
+import { DomController } from '../../platform/dom-controller';
 
 
 /**
@@ -89,7 +89,7 @@ import { DomController } from '../../util/dom-controller';
  * developers to create their own infinite scroll content components.
  * You could replace our default content with custom SVG or CSS animations.
  *
- * @demo /docs/v2/demos/src/infinite-scroll/
+ * @demo /docs/v2/demos/src/infinite-scroll/basic
  *
  */
 @Directive({

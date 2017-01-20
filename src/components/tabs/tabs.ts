@@ -25,38 +25,10 @@ import { ViewController } from '../../navigation/view-controller';
  * For more information on using nav controllers like Tab or [Nav](../../nav/Nav/),
  * take a look at the [NavController API Docs](../../../navigation/NavController/).
  *
- * ### Placement
- *
- * The position of the tabs relative to the content varies based on
- * the mode. The tabs are placed at the bottom of the screen
- * for iOS and Android, and at the top for Windows by default. The position can
- * be configured using the `tabsPlacement` attribute on the `<ion-tabs>` component,
- * or in an app's [config](../../config/Config/).
- * See the [Input Properties](#input-properties) below for the available
- * values of `tabsPlacement`.
- *
- * ### Layout
- *
- * The layout for all of the tabs can be defined using the `tabsLayout`
- * property. If the individual tab has a title and icon, the icons will
- * show on top of the title by default. All tabs can be changed by setting
- * the value of `tabsLayout` on the `<ion-tabs>` element, or in your
- * app's [config](../../config/Config/). For example, this is useful if
- * you want to show tabs with a title only on Android, but show icons
- * and a title for iOS. See the [Input Properties](#input-properties)
- * below for the available values of `tabsLayout`.
- *
- * ### Selecting a Tab
- *
- * There are different ways you can select a specific tab from the tabs
- * component. You can use the `selectedIndex` property to set the index
- * on the `<ion-tabs>` element, or you can call `select()` from the `Tabs`
- * instance after creation. See [usage](#usage) below for more information.
- *
  * @usage
  *
- * You can add a basic tabs template to a `@Component` using the following
- * template:
+ * To add a basic tab bar to a `@Component`, use the `ion-tabs` component with a
+ * nested `ion-tab` component for each tab:
  *
  * ```html
  * <ion-tabs>
@@ -66,14 +38,14 @@ import { ViewController } from '../../navigation/view-controller';
  * </ion-tabs>
  * ```
  *
- * Where `tab1Root`, `tab2Root`, and `tab3Root` are each a page:
+ * Where `tab1Root`, `tab2Root`, and `tab3Root` are each a page component:
  *
  *```ts
  * @Component({
  *   templateUrl: 'build/pages/tabs/tabs.html'
  * })
  * export class TabsPage {
- *   // this tells the tabs component which Pages
+ *   // this tells the tabs component which pages
  *   // should be each tab's root Page
  *   tab1Root = Page1;
  *   tab2Root = Page2;
@@ -86,20 +58,7 @@ import { ViewController } from '../../navigation/view-controller';
  *```
  *
  * By default, the first tab will be selected upon navigation to the
- * Tabs page. We can change the selected tab by using `selectedIndex`
- * on the `<ion-tabs>` element:
- *
- * ```html
- * <ion-tabs selectedIndex="2">
- *   <ion-tab [root]="tab1Root"></ion-tab>
- *   <ion-tab [root]="tab2Root"></ion-tab>
- *   <ion-tab [root]="tab3Root"></ion-tab>
- * </ion-tabs>
- * ```
- *
- * Since the index starts at `0`, this will select the 3rd tab which has
- * root set to `tab3Root`. If you wanted to change it dynamically from
- * your class, you could use [property binding](https://angular.io/docs/ts/latest/guide/template-syntax.html#!#property-binding).
+ * Tabs page. 
  *
  * Alternatively, you can grab the `Tabs` instance and call the `select()`
  * method. This requires the `<ion-tabs>` element to have an `id`. For
@@ -129,18 +88,177 @@ import { ViewController } from '../../navigation/view-controller';
  * }
  *```
  *
- * You can also switch tabs from a child component by calling `select()` on the
+ * ### Tab Bar Placement
+ *
+ * The position of the tabs relative to the content varies based on
+ * the platform mode (iOS, Material Design, Windows Universal). For iOS and Android, 
+ * the tabs are placed at the bottom of the screen. For Windows, tabs are places at 
+ * the top. The position can be changed using the `tabsPlacement` property,
+ * or in an app's [config](../../config/Config/).
+ *
+ * See the [Input Properties](#input-properties) below for the available
+ * values of `tabsPlacement`.
+ *
+ * ### Layout
+ *
+ * The layout for all of the tabs can be defined using the `tabsLayout`
+ * property. If the individual tab has a title and icon, the icons will
+ * show on top of the title by default. All tabs can be changed by setting
+ * the value of `tabsLayout` on the `<ion-tabs>` element, or in your
+ * app's [config](../../config/Config/). For example, this is useful if
+ * you want to show tabs with a title only on Android, but show icons
+ * and a title for iOS. See the [Input Properties](#input-properties)
+ * below for the available values of `tabsLayout`.
+ *
+ * ### Setting the Default Tab
+ *
+ * We can change the selected tab by using `selectedIndex`
+ * on the `<ion-tabs>` element:
+ *
+ * ```html
+ * <ion-tabs selectedIndex="2">
+ *   <ion-tab [root]="tab1Root"></ion-tab>
+ *   <ion-tab [root]="tab2Root"></ion-tab>
+ *   <ion-tab [root]="tab3Root"></ion-tab>
+ * </ion-tabs>
+ * ```
+ *
+ * Since the index starts at `0`, this will select the 3rd tab which has
+ * root set to `tab3Root`. If you wanted to change it dynamically from
+ * your class, you could use [property binding](https://angular.io/docs/ts/latest/guide/template-syntax.html#!#property-binding).
+ *
+ * ### Switching Tabs Programmatically
+ *
+ * To switch to a specific tab programmatically by calling `select()` on the
  * parent view using the `NavController` instance. For example, assuming you have
  * a `TabsPage` component, you could call the following from any of the child
  * components to switch to `TabsRoot3`:
  *
- *```ts
- * switchTabs() {
- *   this.navCtrl.parent.select(2);
- * }
- *```
- * @demo /docs/v2/demos/src/tabs/
+ * ```ts
+ *  switchTabs() {
+ *    this.navCtrl.parent.select(2);
+ *  }
+ * ``` 
  *
+ *
+ * ## Common Usage Patterns
+ * 
+ * ### Icon Tabs
+ * 
+ * To add an icon inside of a tab, use the `tab-icon` attribute. This attribute can be 
+ * passed the name of any [icon](../../icon/Icons):
+ * 
+ * ```typescript
+ * @Component({
+ *   template: `
+ *   <ion-header>
+ *     <ion-navbar>
+ *       <ion-title>Tabs</ion-title>
+ *     </ion-navbar>
+ *   </ion-header>
+ *   <ion-content></ion-content>
+ *   `
+ * })
+ * class TabContentPage {
+ *   constructor() {}
+ * }
+ * 
+ * @Component({
+ *   template: `
+ *   <ion-tabs>
+ *     <ion-tab tabIcon="contact" [root]="tab1"></ion-tab>
+ *     <ion-tab tabIcon="compass" [root]="tab2"></ion-tab>
+ *     <ion-tab tabIcon="analytics" [root]="tab3"></ion-tab>
+ *     <ion-tab tabIcon="settings" [root]="tab4"></ion-tab>
+ *   </ion-tabs>`
+ * })
+ * export class TabsIconPage {
+ *   constructor() {
+ *     this.tab1 = TabContentPage;
+ *     this.tab2 = TabContentPage;
+ *     ...
+ *   }
+ * }
+ * ```
+ * 
+ * ### Icon and Text Tabs
+ * 
+ * To add text and an icon inside of a tab, use the `tab-icon` and `tab-title` attributes:
+ * 
+ * ```typescript
+ * @Component({
+ *   template: `
+ *   <ion-header>
+ *     <ion-navbar>
+ *       <ion-title>Tabs</ion-title>
+ *     </ion-navbar>
+ *   </ion-header>
+ *   <ion-content></ion-content>
+ *   `
+ * })
+ * class TabsTextContentPage {
+ *   constructor() {}
+ * }
+ * 
+ * @Component({
+ *   template: `
+ *   <ion-tabs>
+ *     <ion-tab tabIcon="water" tabTitle="Water" [root]="tab1"></ion-tab>
+ *     <ion-tab tabIcon="leaf" tabTitle="Life" [root]="tab2"></ion-tab>
+ *     <ion-tab tabIcon="flame" tabTitle="Fire" [root]="tab3"></ion-tab>
+ *     <ion-tab tabIcon="magnet" tabTitle="Force" [root]="tab4"></ion-tab>
+ *   </ion-tabs>`
+ * })
+ * export class TabsTextPage {
+ *   constructor() {
+ *     this.tab1 = TabsTextContentPage;
+ *     this.tab2 = TabsTextContentPage;
+ *     ...
+ *   }
+ * }
+ * ```
+ * 
+ * ### Badges on Tabs
+ * 
+ * To add a badge to a tab, use the `tabBadge` and `tabBadgeStyle` attributes. The `tabBadgeStyle` attribute can be passed the name of any [color](/docs/v2/theming/theming-your-app/):
+ * 
+ * 
+ * ```typescript
+ * @Component({
+ *   template: `
+ *   <ion-header>
+ *     <ion-navbar>
+ *       <ion-title>Tabs</ion-title>
+ *     </ion-navbar>
+ *   </ion-header>
+ *   <ion-content></ion-content>
+ *   `
+ * })
+ * class TabBadgePage {
+ *   constructor() {}
+ * }
+ * 
+ * @Component({
+ *   template: `
+ *     <ion-tabs>
+ *       <ion-tab tabIcon="call" [root]="tabOne" tabBadge="3" tabBadgeStyle="danger"></ion-tab>
+ *       <ion-tab tabIcon="chatbubbles" [root]="tabTwo" tabBadge="14" tabBadgeStyle="danger"></ion-tab>
+ *       <ion-tab tabIcon="musical-notes" [root]="tabThree"></ion-tab>
+ *     </ion-tabs>
+ *     `
+ * })
+ * export class BadgesPage {
+ *   constructor() {
+ *     this.tabOne = TabBadgePage;
+ *     this.tabTwo = TabBadgePage;
+ *   }
+ * }
+ * ```
+ *
+ * @demo /docs/v2/demos/src/tabs/basic
+ * @additionalDemo icon-tabs: /docs/v2/demos/src/tabs/icon/
+ * @additionalDemo icon-and-text-tabs: /docs/v2/demos/src/tabs/icon-text/
+ * @additionalDemo badges-on-tabs: /docs/v2/demos/src/tabs/badges/
  * @see {@link /docs/v2/components#tabs Tabs Component Docs}
  * @see {@link ../Tab Tab API Docs}
  * @see {@link ../../config/Config Config API Docs}
@@ -187,7 +305,7 @@ export class Tabs extends Ion implements AfterViewInit {
   }
 
   /**
-   * @input {string} The mode to apply to this component.
+   * @input {string} The mode to apply to this component. Mode can be `ios`, `wp`, or `md`.
    */
   @Input()
   set mode(val: string) {
@@ -245,7 +363,7 @@ export class Tabs extends Ion implements AfterViewInit {
     private _app: App,
     config: Config,
     elementRef: ElementRef,
-    private _platform: Platform,
+    private _plt: Platform,
     renderer: Renderer,
     private _linker: DeepLinker
   ) {
@@ -279,6 +397,9 @@ export class Tabs extends Ion implements AfterViewInit {
     }
   }
 
+  /**
+   * @private
+   */
   ngOnDestroy() {
     this.parent.unregisterChildNav(this);
   }
@@ -292,7 +413,7 @@ export class Tabs extends Ion implements AfterViewInit {
     this._setConfig('tabsHighlight', this.tabsHighlight);
 
     if (this.tabsHighlight) {
-      this._platform.onResize(() => {
+      this._plt.onResize(() => {
         this._highlight.select(this.getSelected());
       });
     }
@@ -366,6 +487,7 @@ export class Tabs extends Ion implements AfterViewInit {
   }
 
   /**
+   * Makes the selected Tab active.
    * @param {number|Tab} tabOrIndex Index, or the Tab instance, of the tab to select.
    */
   select(tabOrIndex: number | Tab, opts: NavOptions = {}) {
@@ -374,54 +496,65 @@ export class Tabs extends Ion implements AfterViewInit {
       return;
     }
 
-    const deselectedTab = this.getSelected();
-    if (selectedTab === deselectedTab) {
-      // no change
+    // If the selected tab is the current selected tab, we do not switch
+    const currentTab = this.getSelected();
+    if (selectedTab === currentTab) {
       return this._touchActive(selectedTab);
     }
 
-    let deselectedPage: ViewController;
-    if (deselectedTab) {
-      deselectedPage = deselectedTab.getActive();
-      deselectedPage && deselectedPage._willLeave(false);
-    }
+    // If the selected tab does not have a root, we do not switch (#9392)
+    // it's possible the tab is only for opening modal's or signing out
+    // and doesn't actually have content. In the case there's no content
+    // for a tab then do nothing and leave the current view as is
+    if (selectedTab.root) {
+      // At this point we are going to perform a page switch
+      // Let's fire willLeave in the current tab page
+      var currentPage: ViewController;
+      if (currentTab) {
+        currentPage = currentTab.getActive();
+        currentPage && currentPage._willLeave(false);
+      }
 
-    opts.animate = false;
+      // Fire willEnter in the new selected tab
+      const selectedPage = selectedTab.getActive();
+      selectedPage && selectedPage._willEnter();
 
-    const selectedPage = selectedTab.getActive();
-    selectedPage && selectedPage._willEnter();
-
-    selectedTab.load(opts, (alreadyLoaded: boolean) => {
-      selectedTab.ionSelect.emit(selectedTab);
-      this.ionChange.emit(selectedTab);
-
-      if (selectedTab.root) {
-        // only show the selectedTab if it has a root
-        // it's possible the tab is only for opening modal's or signing out
-        // and doesn't actually have content. In the case there's no content
-        // for a tab then do nothing and leave the current view as is
-        this._tabs.forEach(tab => {
-          tab.setSelected(tab === selectedTab);
-        });
-
-        if (this.tabsHighlight) {
-          this._highlight.select(selectedTab);
-        }
-
+      // Let's start the transition
+      opts.animate = false;
+      selectedTab.load(opts, () => {
+        this._tabSwitchEnd(selectedTab, selectedPage, currentPage);
         if (opts.updateUrl !== false) {
           this._linker.navChange(DIRECTION_SWITCH);
         }
-      }
+      });
+    }
 
-      selectedPage && selectedPage._didEnter();
-      deselectedPage && deselectedPage._didLeave();
+    selectedTab.ionSelect.emit(selectedTab);
+    this.ionChange.emit(selectedTab);
+  }
 
-      // track the order of which tabs have been selected, by their index
-      // do not track if the tab index is the same as the previous
-      if (this._selectHistory[this._selectHistory.length - 1] !== selectedTab.id) {
-        this._selectHistory.push(selectedTab.id);
-      }
-    });
+  _tabSwitchEnd(selectedTab: Tab, selectedPage: ViewController, currentPage: ViewController) {
+    // Update tabs selection state
+    const tabs = this._tabs;
+    let tab: Tab;
+    for (var i = 0; i < tabs.length; i++) {
+      tab = tabs[i];
+      tab.setSelected(tab === selectedTab);
+    }
+
+    if (this.tabsHighlight) {
+      this._highlight.select(selectedTab);
+    }
+
+    // Fire didEnter/didLeave lifecycle events
+    selectedPage && selectedPage._didEnter();
+    currentPage && currentPage._didLeave();
+
+    // track the order of which tabs have been selected, by their index
+    // do not track if the tab index is the same as the previous
+    if (this._selectHistory[this._selectHistory.length - 1] !== selectedTab.id) {
+      this._selectHistory.push(selectedTab.id);
+    }
   }
 
   /**

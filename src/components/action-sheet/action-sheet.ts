@@ -8,100 +8,40 @@ import { NavOptions } from '../../navigation/nav-util';
 import { ViewController } from '../../navigation/view-controller';
 
 /**
- * @private
- */
-export class ActionSheet extends ViewController {
-  private _app: App;
-
-  constructor(app: App, opts: ActionSheetOptions) {
-    opts.buttons = opts.buttons || [];
-    opts.enableBackdropDismiss = isPresent(opts.enableBackdropDismiss) ? !!opts.enableBackdropDismiss : true;
-
-    super(ActionSheetCmp, opts, null);
-    this._app = app;
-    this.isOverlay = true;
-  }
-
-  /**
-   * @private
-   */
-  getTransitionName(direction: string) {
-    let key = 'actionSheet' + (direction === 'back' ? 'Leave' : 'Enter');
-    return this._nav && this._nav.config.get(key);
-  }
-
-  /**
-   * @param {string} title Action sheet title
-   */
-  setTitle(title: string) {
-    this.data.title = title;
-  }
-
-  /**
-   * @param {string} subTitle Action sheet subtitle
-   */
-  setSubTitle(subTitle: string) {
-    this.data.subTitle = subTitle;
-  }
-
-  /**
-   * @param {object} button Action sheet button
-   */
-  addButton(button: any) {
-    this.data.buttons.push(button);
-  }
-
-  /**
-   * Present the action sheet instance.
-   *
-   * @param {NavOptions} [opts={}] Nav options to go with this transition.
-   * @returns {Promise} Returns a promise which is resolved when the transition has completed.
-   */
-  present(navOptions: NavOptions = {}) {
-    return this._app.present(this, navOptions);
-  }
-
-}
-
-
-/**
- * @name ActionSheetController
+ * @name ActionSheet
  * @description
- * An Action Sheet is a dialog that lets the user choose from a set of
- * options. It appears on top of the app's content, and must be manually
- * dismissed by the user before they can resume interaction with the app.
- * Dangerous (destructive) options are made obvious in `ios` mode. There are easy
- * ways to cancel out of the action sheet, such as tapping the backdrop or
- * hitting the escape key on desktop.
+ * An Action Sheet opens a dialog on top of the app's content that contains buttons, and is.
+ * usually used to present the user with a set of actions to choose from. Each button can be 
+ * customized, and assigned a handler function that is called when the button is tapped.
  *
- * An action sheet is created from an array of `buttons`, with each button
- * including properties for its `text`, and optionally a `handler` and `role`.
- * If a handler returns `false` then the action sheet will not be dismissed. An
- * action sheet can also optionally have a `title`, `subTitle` and an `icon`.
+ * ### Creating an Action Sheet
  *
- * A button's `role` property can either be `destructive` or `cancel`. Buttons
- * without a role property will have the default look for the platform. Buttons
- * with the `cancel` role will always load as the bottom button, no matter where
- * they are in the array. All other buttons will be displayed in the order they
- * have been added to the `buttons` array. Note: We recommend that `destructive`
- * buttons are always the first button in the array, making them the top button.
- * Additionally, if the action sheet is dismissed by tapping the backdrop, then
- * it will fire the handler from the button with the cancel role.
+ * An Action Sheet is defined by importing and creating an instance of ActionSheetController
+ * then calling `create(options)` on the instance. Action Sheet options can also
+ * be specified at a later time with [instance methods](#instance-members). For a complete
+ * list of options see [Action Sheet Options](#action-sheet-options) below.
  *
- * You can pass all of the action sheet's options in the first argument of
- * the create method: `ActionSheet.create(opts)`. Otherwise the action sheet's
- * instance has methods to add options, like `setTitle()` or `addButton()`.
+ * To display an Action Sheet call `present()` on a defined Action Sheet.
+ *
+ * ### Dismissing an Action Sheet
+ *
+ * A user must manually dismiss an Action Sheet, before they can resume interaction 
+ * with the app. This is done by tapping one of the Action Sheet's buttons, 
+ * tapping the back button (Android), or tapping the background outside the 
+ * Action Sheet. To prevent tapping a button from dismissing the Action Sheet,
+ * set the handler function for that button to return `false`.
  *
  * @usage
  * ```ts
- * import { ActionSheetController } from 'ionic-angular'
+ * import { ActionSheetController } from 'ionic-angular';
  *
  * export class MyClass{
  *
+ *  //create instance of ActionSheetController
  *  constructor(public actionSheetCtrl: ActionSheetController) {}
  *
  *  presentActionSheet() {
- *    let actionSheet = this.actionSheetCtrl.create({
+ *    let options = {
  *      title: 'Modify your album',
  *      buttons: [
  *        {
@@ -125,74 +65,78 @@ export class ActionSheet extends ViewController {
  *          }
  *        }
  *      ]
- *    });
+ *    }
  *
+ *    // create the Action Sheet
+ *    let actionSheet = this.actionSheetCtrl.create(options);
+ *
+ *    // update the subtitle
+ *    actionSheet.setSubTitle('Or Archive Your Album')
+ *
+ *    // show the Action Sheet 
  *    actionSheet.present();
  *  }
  * }
  * ```
  *
+ * ### Action Sheet Options
+ *
+ *
+ * | Option                | Type          | Description                                                                                                                                                                                           |
+ * |-----------------------|---------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+ * | title                 |`string`       | The title for the Action Sheet.                                                                                                                                                                       |
+ * | subTitle              |`string`       | The sub-title for the Action Sheet.                                                                                                                                                                   |
+ * | cssClass              |`string`       | Additional classes for custom styles, separated by spaces.                                                                                                                                            |
+ * | enableBackdropDismiss |`boolean`      | If the Action Sheet should close when the user taps the backdrop. Defaults to true.                                                                                                                   |
+ * | buttons               |`Array<any>`   | An array of [button options](#button-options). Buttons are displayed in the order they are included in the array, except buttons with `role: cancel`, which appear at the button of the Action Sheet. |
+ *
+ * ### Button Options
+ *
+ * | Option   | Type     | Description                                                                                                                                                                                                                                                                               |
+ * |----------|----------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+ * | text     | `string` | The button text.                                                                                                                                                                                                                                                                          |
+ * | icon     | `icon`   | The button icon.                                                                                                                                                                                                                                                                          |
+ * | handler  | `any`    | A callback function to execute when the button is tapped. If the user dismisses the Action Sheet by tapping the background, the handler for the button with `role: cancel` will be executed                                                                                               |
+ * | cssClass | `string` | Additional classes for custom styles, separated by spaces.                                                                                                                                                                                                                                |
+ * | role     | `string` | `destructive` or `cancel`. `destructive` styles the button in iOS mode only. It is recommended that `destructive` buttons be included at the start of the `buttons` array. `cancel` styles the button across all platform modes, and places the button at the bottom of the Action Sheet. |
+ *
  * @advanced
+ * ### Starting Page Transitions in Handler Functions
  *
- * ActionSheet create options
+ * If you want to start a page transition in your app from an Action Sheet button's handler
+ * function, it is important to keep in mind that the Action Sheet dismissal and the 
+ * page transition occur asynchronously. This may cause unexpected results, such as a 
+ * janky page transition, since the page transition animation could start before the 
+ * Action Sheet has been fully dismissed from the view.
+ * 
+ * To prevent this, you should programmatically dismiss the Action Sheet in the button's 
+ * handler function using `dismiss()`, which returns a promise. You can then call the page
+ * transition when the promise resolves to ensure everything happens in the expected order.
  *
- * | Option                | Type       | Description                                                        |
- * |-----------------------|------------|--------------------------------------------------------------------|
- * | title                 |`string`    | The title for the Action Sheet.                                    |
- * | subTitle              |`string`    | The sub-title for the Action Sheet.                                |
- * | cssClass              |`string`    | Additional classes for custom styles, separated by spaces.         |
- * | enableBackdropDismiss |`boolean`   | If the Action Sheet should close when the user taps the backdrop.  |
- * | buttons               |`array<any>`| An array of buttons to display.                                    |
+ * Also, the handler function must return `false`. This prevents Ionic from automatically
+ * dismissing the Action Sheet once the handler function has finished, which allows us to 
+ * manually control the order of events.
  *
- * ActionSheet button options
- *
- * | Option   | Type     | Description                                                                                                                                      |
- * |----------|----------|--------------------------------------------------------------------------------------------------------------------------------------------------|
- * | text     | `string` | The buttons text.                                                                                                                                |
- * | icon     | `icon`   | The buttons icons.                                                                                                                               |
- * | handler  | `any`    | An express the button should evaluate.                                                                                                           |
- * | cssClass | `string` | Additional classes for custom styles, separated by spaces.                                                                                       |
- * | role     | `string` | How the button should be displayed, `destructive` or `cancel`. If not role is provided, it will display the button without any additional styles.|
- *
- *
- * ### Dismissing And Async Navigation
- *
- * After an action sheet has been dismissed, the app may need to also transition
- * to another page depending on the handler's logic. However, because multiple
- * transitions were fired at roughly the same time, it's difficult for the
- * nav controller to cleanly animate multiple transitions that may
- * have been kicked off asynchronously. This is further described in the
- * [`Nav Transition Promises`](../../nav/NavController/#nav-transition-promises) section. For action sheets,
- * this means it's best to wait for the action sheet to finish its transition
- * out before starting a new transition on the same nav controller.
- *
- * In the example below, after the button has been clicked, its handler
- * waits on async operation to complete, *then* it uses `pop` to navigate
- * back a page in the same stack. The potential problem is that the async operation
- * may have been completed before the action sheet has even finished its transition
- * out. In this case, it's best to ensure the action sheet has finished its transition
- * out first, *then* start the next transition.
+ * For example, the following creates an Action Sheet with a 'Transition Me!' button whose 
+ * handler function dismisses the Action Sheet, then transitions to the previous page
+ * in the app.
  *
  * ```ts
  * let actionSheet = this.actionSheetCtrl.create({
  *   title: 'Hello',
  *   buttons: [{
- *     text: 'Ok',
+ *     text: 'Transition Me!',
  *     handler: () => {
- *       // user has clicked the action sheet button
- *       // begin the action sheet's dimiss transition
+ *       // begin the Action Sheet's dimiss transition
  *       let navTransition = actionSheet.dismiss();
  *
- *       // start some async method
- *       someAsyncOperation().then(() => {
- *         // once the async operation has completed
- *         // then run the next nav transition after the
- *         // first transition has finished animating out
- *
- *         navTransition.then(() => {
- *           this.nav.pop();
- *         });
+ *       // start the page transition when dismissal of
+ *       // the Action Sheet is complete
+ *       navTransition.then(() => {
+ *         this.nav.pop();
  *       });
+ *      
+ *       // prevent Action Sheet from being dismissed automatically
  *       return false;
  *     }
  *   }]
@@ -201,17 +145,76 @@ export class ActionSheet extends ViewController {
  * actionSheet.present();
  * ```
  *
- * It's important to note that the handler returns `false`. A feature of
- * button handlers is that they automatically dismiss the action sheet when their button
- * was clicked, however, we'll need more control regarding the transition. Because
- * the handler returns `false`, then the action sheet does not automatically dismiss
- * itself. Instead, you now have complete control of when the action sheet has finished
- * transitioning, and the ability to wait for the action sheet to finish transitioning
- * out before starting a new transition.
+ * @demo /docs/v2/demos/src/action-sheet/basic
+ * @see {@link ../ActionSheetController ActionSheetController API Docs}
+ */
+export class ActionSheet extends ViewController {
+  private _app: App;
+
+  constructor(app: App, opts: ActionSheetOptions) {
+    opts.buttons = opts.buttons || [];
+    opts.enableBackdropDismiss = isPresent(opts.enableBackdropDismiss) ? !!opts.enableBackdropDismiss : true;
+
+    super(ActionSheetCmp, opts, null);
+    this._app = app;
+    this.isOverlay = true;
+  }
+
+  /**
+   * @private
+   */
+  getTransitionName(direction: string) {
+    let key = 'actionSheet' + (direction === 'back' ? 'Leave' : 'Enter');
+    return this._nav && this._nav.config.get(key);
+  }
+
+  /**
+   * Sets the title of the Action Sheet.
+   * @param {string} title Action sheet title
+   */
+  setTitle(title: string) {
+    this.data.title = title;
+  }
+
+  /**
+   * Sets the subtitle of the Action Sheet.
+   * @param {string} subTitle Action sheet subtitle
+   */
+  setSubTitle(subTitle: string) {
+    this.data.subTitle = subTitle;
+  }
+
+  /**
+   * Adds a button to the Action Sheet. See [Action Sheet Button Options](#action-sheet-button-options).
+   * @param {object} button Action sheet button
+   */
+  addButton(button: any) {
+    this.data.buttons.push(button);
+  }
+
+  /**
+   * Show the Action Sheet instance to the user.
+   *
+   * @param {NavOptions} [opts={}] Nav options to go with this transition.
+   * @returns {Promise} Returns a promise which is resolved when the transition has completed.
+   */
+  present(navOptions: NavOptions = {}) {
+    return this._app.present(this, navOptions);
+  }
+
+}
+
+
+/**
+ * @name ActionSheetController
+ * @description
+ * ActionSheetController is used to create instances of the ActionSheet class for displaying 
+ * the Action Sheet component.
  *
+ * For complete information on creating and using the Action Sheet component, see the 
+ * [Action Sheet API docs](../ActionSheet)
  *
- * @demo /docs/v2/demos/src/action-sheet/
- * @see {@link /docs/v2/components#action-sheets ActionSheet Component Docs}
+ * @see {@link ../ActionSheet ActionSheet API Docs}
  */
 @Injectable()
 export class ActionSheetController {
@@ -219,8 +222,10 @@ export class ActionSheetController {
   constructor(private _app: App) {}
 
   /**
-   * Open an action sheet with a title, subTitle, and an array of buttons
-   * @param {ActionSheetOptions} opts Action sheet options
+   * Creates an instance of [ActionSheet](../ActionSheet).
+   * @param {Object} opts Options object that sets the appearance and behavior of the Action Sheet. 
+   *                      See [Action Sheet options](../ActionSheet#action-sheet-options) in the 
+   *                      ActionSheet API doc.
    */
   create(opts: ActionSheetOptions = {}): ActionSheet {
     return new ActionSheet(this._app, opts);

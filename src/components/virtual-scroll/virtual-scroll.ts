@@ -1,9 +1,9 @@
-import { AfterContentInit, ChangeDetectorRef, ContentChild, Directive, DoCheck, ElementRef, Input, IterableDiffers, IterableDiffer, NgZone, OnDestroy, Optional, Renderer, TrackByFn } from '@angular/core';
+import { AfterContentInit, ChangeDetectorRef, ContentChild, Directive, DoCheck, ElementRef, Input, IterableDiffers, NgZone, OnDestroy, Renderer, TrackByFn } from '@angular/core';
 
 import { adjustRendered, calcDimensions, estimateHeight, initReadNodes, processRecords, populateNodeData, updateDimensions, updateNodeContext, writeToNodes } from './virtual-util';
 import { Config } from '../../config/config';
 import { Content, ScrollEvent } from '../content/content';
-import { DomController } from '../../util/dom-controller';
+import { DomController } from '../../platform/dom-controller';
 import { isBlank, isFunction, isPresent } from '../../util/util';
 import { Platform } from '../../platform/platform';
 import { ViewController } from '../../navigation/view-controller';
@@ -15,17 +15,16 @@ import { VirtualFooter, VirtualHeader, VirtualItem } from './virtual-item';
  * @name VirtualScroll
  * @description
  * Virtual Scroll displays a virtual, "infinite" list. An array of records
- * is passed to the virtual scroll containing the data to create templates
- * for. The template created for each record, referred to as a cell, can
- * consist of items, headers, and footers.
+ * is passed to the Virtual Scroll, which creates templates for each record. Each 
+ * template is referred to as a cell, and can consist of items, headers, and footers.
  *
  * For performance reasons, not every record in the list is rendered at once;
  * instead a small subset of records (enough to fill the viewport) are rendered
  * and reused as the user scrolls.
  *
- * ### The Basics
+ * ## The Basics
  *
- * The array of records should be passed to the `virtualScroll` property.
+ * The array of records is passed to the `virtualScroll` property.
  * The data given to the `virtualScroll` property must be an array. An item
  * template with the `*virtualItem` property is required in the `virtualScroll`.
  * The `virtualScroll` and `*virtualItem` properties can be added to any element.
@@ -41,7 +40,7 @@ import { VirtualFooter, VirtualHeader, VirtualItem } from './virtual-item';
  * ```
  *
  *
- * ### Section Headers and Footers
+ * ## Section Headers and Footers
  *
  * Section headers and footers are optional. They can be dynamically created
  * from developer-defined functions. For example, a large list of contacts
@@ -83,7 +82,7 @@ import { VirtualFooter, VirtualHeader, VirtualItem } from './virtual-item';
  * ```
  *
  *
- * ### Approximate Widths and Heights
+ * ## Approximate Widths and Heights
  *
  * If the height of items in the virtual scroll are not close to the
  * default size of 40px, it is extremely important to provide an value for
@@ -100,7 +99,7 @@ import { VirtualFooter, VirtualHeader, VirtualItem } from './virtual-item';
  * slightly different heights between platforms, which is perfectly fine.
  *
  *
- * ### Images Within Virtual Scroll
+ * ## Images Within Virtual Scroll
  *
  * HTTP requests, image decoding, and image rendering can cause jank while
  * scrolling. In order to better control images, Ionic provides `<ion-img>`
@@ -136,7 +135,7 @@ import { VirtualFooter, VirtualHeader, VirtualItem } from './virtual-item';
  * ```
  *
  *
- * ### Custom Components
+ * ## Custom Components
  *
  * If a custom component is going to be used within Virtual Scroll, it's best
  * to wrap it with a good old `<div>` to ensure the component is rendered
@@ -159,7 +158,7 @@ import { VirtualFooter, VirtualHeader, VirtualItem } from './virtual-item';
  *
  * ## Virtual Scroll Performance Tips
  *
- * #### iOS Cordova WKWebView
+ * ### iOS Cordova WKWebView
  *
  * When deploying to iOS with Cordova, it's highly recommended to use the
  * [WKWebView plugin](http://blog.ionic.io/cordova-ios-performance-improvements-drop-in-speed-with-wkwebview/)
@@ -167,7 +166,7 @@ import { VirtualFooter, VirtualHeader, VirtualItem } from './virtual-item';
  * WKWebView is superior at scrolling efficiently in comparision to the older
  * UIWebView.
  *
- * #### Lock in element dimensions and locations
+ * ### Lock in element dimensions and locations
  *
  * In order for virtual scroll to efficiently size and locate every item, it's
  * very important every element within each virtual item does not dynamically
@@ -175,14 +174,14 @@ import { VirtualFooter, VirtualHeader, VirtualItem } from './virtual-item';
  * does not change, it's recommended each virtual item has locked in its size
  * via CSS.
  *
- * #### Use `ion-img` for images
+ * ### Use `ion-img` for images
  *
  * When including images within Virtual Scroll, be sure to use
  * [`ion-img`](../img/Img/) rather than the standard `<img>` HTML element.
  * With `ion-img`, images are lazy loaded so only the viewable ones are
  * rendered, and HTTP requests are efficiently controlled while scrolling.
  *
- * #### Set Approximate Widths and Heights
+ * ### Set Approximate Widths and Heights
  *
  * As mentioned above, all elements should lock in their dimensions. However,
  * virtual scroll isn't aware of the dimensions until after they have been
@@ -192,7 +191,7 @@ import { VirtualFooter, VirtualHeader, VirtualItem } from './virtual-item';
  * therefore allowing virtual scroll to decide how many items should be
  * created.
  *
- * #### Changing dataset should use `virtualTrackBy`
+ * ### Changing dataset should use `virtualTrackBy`
  *
  * It is possible for the identities of elements in the iterator to change
  * while the data does not. This can happen, for example, if the iterator
@@ -201,19 +200,20 @@ import { VirtualFooter, VirtualHeader, VirtualItem } from './virtual-item';
  * different identities, and Ionic will tear down the entire DOM and rebuild
  * it. This is an expensive operation and should be avoided if possible.
  *
- * #### Efficient headers and footer functions
+ * ### Efficient headers and footer functions
  *
  * Each virtual item must stay extremely efficient, but one way to really
  * kill its performance is to perform any DOM operations within section header
  * and footer functions. These functions are called for every record in the
  * dataset, so please make sure they're performant.
  *
+ * @demo /docs/v2/demos/src/virtual-scroll/basic 
  */
 @Directive({
   selector: '[virtualScroll]'
 })
 export class VirtualScroll implements DoCheck, AfterContentInit, OnDestroy {
-  _differ: IterableDiffer;
+  _differ: any;
   _scrollSub: any;
   _scrollEndSub: any;
   _init: boolean;
@@ -343,7 +343,7 @@ export class VirtualScroll implements DoCheck, AfterContentInit, OnDestroy {
    */
   @Input() set headerFn(val: Function) {
     if (isFunction(val)) {
-      this._hdrFn = val.bind((this._ctrl && this._ctrl._cmp) || this);
+      this._hdrFn = val.bind((this._ctrl._cmp) || this);
     }
   }
 
@@ -356,7 +356,7 @@ export class VirtualScroll implements DoCheck, AfterContentInit, OnDestroy {
    */
   @Input() set footerFn(val: Function) {
     if (isFunction(val)) {
-      this._ftrFn = val.bind((this._ctrl && this._ctrl._cmp) || this);
+      this._ftrFn = val.bind((this._ctrl._cmp) || this);
     }
   }
 
@@ -373,8 +373,8 @@ export class VirtualScroll implements DoCheck, AfterContentInit, OnDestroy {
     private _zone: NgZone,
     private _cd: ChangeDetectorRef,
     private _content: Content,
-    private _platform: Platform,
-    @Optional() private _ctrl: ViewController,
+    private _plt: Platform,
+    private _ctrl: ViewController,
     private _config: Config,
     private _dom: DomController) {
 
@@ -384,14 +384,14 @@ export class VirtualScroll implements DoCheck, AfterContentInit, OnDestroy {
     this._renderer.setElementClass(_elementRef.nativeElement, 'virtual-loading', true);
 
     // wait for the content to be rendered and has readable dimensions
-    _content.readReady.subscribe(() => {
+    _ctrl.readReady.subscribe(() => {
       this._init = true;
 
       if (this._hasChanges()) {
         this.readUpdate();
 
         // wait for the content to be writable
-        var subscription = _content.writeReady.subscribe(() => {
+        var subscription = _ctrl.writeReady.subscribe(() => {
           subscription.unsubscribe();
           this.writeUpdate();
         });
@@ -413,6 +413,9 @@ export class VirtualScroll implements DoCheck, AfterContentInit, OnDestroy {
     }
   }
 
+  /**
+   * @private
+   */
   readUpdate() {
     console.debug(`virtual-scroll, readUpdate`);
 
@@ -429,6 +432,9 @@ export class VirtualScroll implements DoCheck, AfterContentInit, OnDestroy {
                    this.bufferRatio);
   }
 
+  /**
+   * @private
+   */
   writeUpdate() {
     console.debug(`virtual-scroll, writeUpdate`);
 
@@ -478,7 +484,7 @@ export class VirtualScroll implements DoCheck, AfterContentInit, OnDestroy {
     // wait a frame before trying to read and calculate the dimensions
     this._dom.read(() => {
       // ******** DOM READ ****************
-      initReadNodes(nodes, cells, data);
+      initReadNodes(this._plt, nodes, cells, data);
     });
 
     this._dom.write(() => {
@@ -509,7 +515,7 @@ export class VirtualScroll implements DoCheck, AfterContentInit, OnDestroy {
       renderer.setElementClass(ele, 'virtual-loading', false);
 
       // ******** DOM WRITE ****************
-      writeToNodes(nodes, cells, recordsLength);
+      writeToNodes(this._plt, nodes, cells, recordsLength);
 
       // ******** DOM WRITE ****************
       this._setHeight(
@@ -541,7 +547,7 @@ export class VirtualScroll implements DoCheck, AfterContentInit, OnDestroy {
         const recordsLength = this._records.length;
 
         // ******** DOM WRITE ****************
-        writeToNodes(nodes, cells, recordsLength);
+        writeToNodes(this._plt, nodes, cells, recordsLength);
 
         // ******** DOM WRITE ****************
         this._setHeight(
@@ -587,7 +593,7 @@ export class VirtualScroll implements DoCheck, AfterContentInit, OnDestroy {
         }
 
         // ******** DOM READ ****************
-        updateDimensions(nodes, cells, data, false);
+        updateDimensions(this._plt, nodes, cells, data, false);
 
         adjustRendered(cells, data);
 
@@ -621,7 +627,7 @@ export class VirtualScroll implements DoCheck, AfterContentInit, OnDestroy {
     const data = this._data;
 
     // ******** DOM READ ****************
-    updateDimensions(nodes, cells, data, false);
+    updateDimensions(this._plt, nodes, cells, data, false);
 
     adjustRendered(cells, data);
 
@@ -639,7 +645,7 @@ export class VirtualScroll implements DoCheck, AfterContentInit, OnDestroy {
       }
 
       // ******** DOM WRITE ****************
-      writeToNodes(nodes, cells, recordsLength);
+      writeToNodes(this._plt, nodes, cells, recordsLength);
 
       // ******** DOM WRITE ****************
       this._setHeight(

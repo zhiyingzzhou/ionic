@@ -38,7 +38,7 @@ import { isPresent, isTrueProperty } from '../../util/util';
  * ```
  *
  *
- * @demo /docs/v2/demos/src/segment/
+ * @demo /docs/v2/demos/src/segment/basic
  * @see {@link /docs/v2/components#segment Segment Component Docs}
  * @see {@link /docs/v2/api/components/segment/Segment/ Segment API Docs}
  */
@@ -195,7 +195,7 @@ export class Segment extends Ion {
   }
 
   /**
-   * @input {string} The mode to apply to this component.
+   * @input {string} The mode to apply to this component. Mode can be `ios`, `wp`, or `md`.
    */
   @Input()
   set mode(val: string) {

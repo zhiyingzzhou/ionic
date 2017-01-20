@@ -7,7 +7,7 @@ import { Ion } from '../ion';
   * @name Note
   * @module ionic
   * @description
-  * A note is detailed item in an ion-item. It creates greyed out element that can be on the left or right side of an item.
+  * A note adds a greyed out element that can be on the left or right side of an item.
   * @usage
   *
   * ```html
@@ -25,7 +25,8 @@ import { Ion } from '../ion';
   *   </ion-list>
   * </ion-content>
   *```
- * {@link /docs/v2/api/components/api/components/item/item ion-item}
+  * @demo /docs/v2/demos/src/note/basic  
+  * {@link /docs/v2/api/components/api/components/item/item ion-item}
   */
 @Directive({
   selector: 'ion-note'
@@ -41,7 +42,7 @@ export class Note extends Ion {
   }
 
   /**
-   * @input {string} The mode to apply to this component.
+   * @input {string} The mode to apply to this component. Mode can be `ios`, `wp`, or `md`.
    */
   @Input()
   set mode(val: string) {

@@ -1,17 +1,16 @@
 import { NgModule } from '@angular/core';
-import { $CLASSNAMEComponent } from './$FILENAME';
 import { IonicModule } from 'ionic-angular';
+import { $CLASSNAME } from './$FILENAME';
 
 @NgModule({
   declarations: [
-    $CLASSNAMEComponent,
+    $CLASSNAME,
   ],
   imports: [
-    IonicModule.forChild($CLASSNAMEComponent)
+    IonicModule.forChild($CLASSNAME),
   ],
-  entryComponents: [
-    $CLASSNAMEComponent
-  ],
-  providers: []
+  exports: [
+    $CLASSNAME
+  ]
 })
-export class $CLASSNAMEComponentModule {}
+export class $CLASSNAMEModule {}

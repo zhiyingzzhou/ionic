@@ -116,6 +116,8 @@ export const PLATFORM_CONFIGS: { [key: string]: PlatformConfig } = {
       tapPolyfill: isIosUIWebView,
       virtualScrollEventAssist: isIosUIWebView,
       disableScrollAssist: isIos,
+      scrollPadding: scrollPadding,
+      keyboardResizes: keyboardResizes,
     },
     isMatch(plt: Platform) {
       return plt.isPlatformMatch('ios', ['iphone', 'ipad', 'ipod'], ['windows phone']);
@@ -239,6 +241,21 @@ export const PLATFORM_CONFIGS: { [key: string]: PlatformConfig } = {
     }
   }
 };
+
+function keyboardResizes(plt: Platform): boolean {
+  const win = <any>plt.win;
+  if (win.Ionic && win.Ionic.KeyboardResizes === true) {
+    return true;
+  }
+  return false;
+}
+
+function scrollPadding(plt: Platform): boolean {
+  if (keyboardResizes(plt) === true) {
+    return false;
+  }
+  return null;
+}
 
 
 export const PlatformConfigToken = new OpaqueToken('PLTCONFIG');

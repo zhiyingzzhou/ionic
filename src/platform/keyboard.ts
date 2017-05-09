@@ -1,4 +1,4 @@
-import { Injectable, NgZone } from '@angular/core';
+import { Injectable, NgZone, EventEmitter } from '@angular/core';
 
 import { Config } from '../config/config';
 import { DomController } from './dom-controller';
@@ -26,14 +26,60 @@ import { Platform } from './platform';
 export class Keyboard {
   private _tmr: any;
 
-  constructor(config: Config, private _plt: Platform, private _zone: NgZone, private _dom: DomController) {
+  willShow = new EventEmitter<void>();
+  willHide = new EventEmitter<void>();
+  didShow = new EventEmitter<void>();
+  didHide = new EventEmitter<void>();
+  didChange = new EventEmitter<boolean>();
+
+  eventsAvailable = false;
+
+  constructor(
+    config: Config,
+    private _plt: Platform,
+    private _zone: NgZone,
+    private _dom: DomController
+  ) {
     this.focusOutline(config.get('focusOutline'));
 
-    const win = _plt.win();
+    const win = <any>_plt.win();
+    const usingIonicEngine = win.Ionic && win.Ionic.KeyboardEvents === true;
+    if (usingIonicEngine) {
+      this.listenV2(win);
+    } else {
+      this.listenV1(win);
+    }
+  }
 
-    _plt.registerListener(win, 'native.keyboardhide', () => {
-      _plt.cancelTimeout(this._tmr);
-      this._tmr = _plt.timeout(() => {
+  private listenV2(win: any) {
+    this._plt.registerListener(win, 'native.ionic.keyboardWillShow', () => {
+      this.willShow.emit();
+    }, { zone: true, passive: true });
+
+    this._plt.registerListener(win, 'native.ionic.keyboardWillHide', () => {
+      this.willHide.emit();
+      this._plt.focusOutActiveElement();
+    }, { zone: true, passive: true });
+
+    this._plt.registerListener(win, 'native.ionic.keyboardDidShow', () => {
+      this.didShow.emit();
+      this.didChange.emit(true);
+    }, { zone: true, passive: true });
+
+    this._plt.registerListener(win, 'native.ionic.keyboardDidHide', () => {
+      this.didHide.emit();
+      this.didChange.emit(false);
+    }, { zone: true, passive: true });
+    this.eventsAvailable = true;
+
+
+  }
+
+  // TODO: deprecate once ionic-engine is released
+  private listenV1(win: any) {
+    this._plt.registerListener(win, 'native.keyboardhide', () => {
+      this._plt.cancelTimeout(this._tmr);
+      this._tmr = this._plt.timeout(() => {
         // this custom cordova plugin event fires when the keyboard will hide
         // useful when the virtual keyboard is closed natively
         // https://github.com/driftyco/ionic-plugin-keyboard
@@ -43,8 +89,8 @@ export class Keyboard {
       }, 80);
     }, { zone: false, passive: true });
 
-    _plt.registerListener(win, 'native.keyboardshow', () => {
-      _plt.cancelTimeout(this._tmr);
+    this._plt.registerListener(win, 'native.keyboardshow', () => {
+      this._plt.cancelTimeout(this._tmr);
     }, { zone: false, passive: true });
 
   }

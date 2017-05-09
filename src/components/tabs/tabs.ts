@@ -5,6 +5,7 @@ import { Config } from '../../config/config';
 import { DeepLinker } from '../../navigation/deep-linker';
 import { Ion } from '../ion';
 import { isBlank, assert } from '../../util/util';
+import { Keyboard } from '../../platform/keyboard';
 import { Tabs as ITabs } from '../../navigation/nav-interfaces';
 import { NavController } from '../../navigation/nav-controller';
 import { NavControllerBase } from '../../navigation/nav-controller-base';
@@ -151,7 +152,7 @@ import { ViewController } from '../../navigation/view-controller';
 @Component({
   selector: 'ion-tabs',
   template:
-    '<div class="tabbar" role="tablist" #tabbar>' +
+    '<div class="tabbar" role="tablist" #tabbar [hidden]="_tabbarHidden">' +
       '<a *ngFor="let t of _tabs" [tab]="t" class="tab-button" role="tab" href="#" (ionSelect)="select(t)"></a>' +
       '<div class="tab-highlight"></div>' +
     '</div>' +
@@ -177,6 +178,10 @@ export class Tabs extends Ion implements AfterViewInit, RootNode, ITabs {
   _selectHistory: string[] = [];
   /** @internal */
   _resizeObs: any;
+  /** @internal */
+  _keyboardObs: any;
+  /** @internal */
+  _tabbarHidden = false;
 
   /**
    * @input {number} The default selected tab index when first loaded. If a selected index isn't provided then it will use `0`, the first tab.
@@ -231,7 +236,8 @@ export class Tabs extends Ion implements AfterViewInit, RootNode, ITabs {
     elementRef: ElementRef,
     private _plt: Platform,
     renderer: Renderer,
-    private _linker: DeepLinker
+    private _linker: DeepLinker,
+    keyboard?: Keyboard
   ) {
     super(config, elementRef, renderer, 'tabs');
 
@@ -261,9 +267,26 @@ export class Tabs extends Ion implements AfterViewInit, RootNode, ITabs {
       viewCtrl._setContent(this);
       viewCtrl._setContentRef(elementRef);
     }
+
+    if (keyboard) {
+      keyboard.didChange.subscribe((visible: boolean) => {
+        // TODO: this is a hacky implementation
+        // debouncing should be properly implemented in the native side
+        if (visible) {
+          this._tabbarHidden = visible;
+          this.resize();
+        } else {
+          setTimeout(() => {
+            this._tabbarHidden = visible;
+            this.resize();
+          }, 100);
+        }
+      });
+    }
   }
 
   ngOnDestroy() {
+    this._keyboardObs && this._keyboardObs.unsubscribe();
     this._resizeObs && this._resizeObs.unsubscribe();
     this.parent.unregisterChildNav(this);
   }

@@ -243,8 +243,8 @@ export const PLATFORM_CONFIGS: { [key: string]: PlatformConfig } = {
 };
 
 function keyboardResizes(plt: Platform): boolean {
-  const win = <any>plt.win;
-  if (win.Ionic && win.Ionic.KeyboardResizes === true) {
+  const win = <any>plt.win();
+  if (win.Ionic && win.Ionic.keyboardResizes === true) {
     return true;
   }
   return false;

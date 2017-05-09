@@ -43,36 +43,39 @@ export class Keyboard {
     this.focusOutline(config.get('focusOutline'));
 
     const win = <any>_plt.win();
-    const usingIonicEngine = win.Ionic && win.Ionic.KeyboardEvents === true;
-    if (usingIonicEngine) {
-      this.listenV2(win);
-    } else {
-      this.listenV1(win);
-    }
+    // const usingIonicEngine = win.Ionic && win.Ionic.KeyboardEvents === true;
+    // if (usingIonicEngine) {
+    //   this.listenV2(win);
+    // } else {
+    //   this.listenV1(win);
+    // }
+    this.listenV2(win);
   }
 
   private listenV2(win: any) {
-    this._plt.registerListener(win, 'native.ionic.keyboardWillShow', () => {
-      this.willShow.emit();
-    }, { zone: true, passive: true });
+    this._plt.registerListener(win, 'keyboardWillShow', () => {
+      this._zone.run(() => this.willShow.emit());
+    }, { zone: false, passive: true });
 
-    this._plt.registerListener(win, 'native.ionic.keyboardWillHide', () => {
-      this.willHide.emit();
+    this._plt.registerListener(win, 'keyboardWillHide', () => {
+      this._zone.run(() => {
+        this.willHide.emit();
+        this.didChange.emit(false);
+      });
       this._plt.focusOutActiveElement();
-    }, { zone: true, passive: true });
+    }, { zone: false, passive: true });
 
-    this._plt.registerListener(win, 'native.ionic.keyboardDidShow', () => {
-      this.didShow.emit();
-      this.didChange.emit(true);
-    }, { zone: true, passive: true });
+    this._plt.registerListener(win, 'keyboardDidShow', () => {
+      this._zone.run(() => {
+        this.didShow.emit();
+        this.didChange.emit(true);
+      });
+    }, { zone: false, passive: true });
 
-    this._plt.registerListener(win, 'native.ionic.keyboardDidHide', () => {
-      this.didHide.emit();
-      this.didChange.emit(false);
-    }, { zone: true, passive: true });
+    this._plt.registerListener(win, 'keyboardDidHide', () => {
+      this._zone.run(() => this.didHide.emit());
+    }, { zone: false, passive: true });
     this.eventsAvailable = true;
-
-
   }
 
   // TODO: deprecate once ionic-engine is released

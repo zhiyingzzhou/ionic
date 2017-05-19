@@ -1,9 +1,29 @@
-import { getScrollData } from '../input';
+import { getScrollData, TextInput } from '../input';
 import { ContentDimensions } from '../../content/content';
+import { mockConfig, mockApp, mockPlatform, mockDomController, mockElementRef, mockRenderer, mockItem, mockForm, mockZone } from '../../../util/mock-providers';
+import { commonInputTest, TEXT_CORPUS } from '../../../util/input-tester';
 
 
 describe('text input', () => {
 
+  it('should pass common test', () => {
+
+    const platform = mockPlatform();
+    const config = mockConfig();
+    const app = mockApp(config, platform);
+    const elementRef = mockElementRef();
+    const renderer = mockRenderer();
+    const item: any = mockItem();
+    const form = mockForm();
+    const dom = mockDomController(platform);
+    const textInput = new TextInput(config, platform, form, app, elementRef, renderer, null, item, null, dom);
+
+    commonInputTest(textInput, {
+      defaultValue: '',
+      corpus: TEXT_CORPUS,
+    });
+
+  });
   describe('getScrollData', () => {
 
     it('should scroll, top and bottom below safe area, no room to scroll', () => {

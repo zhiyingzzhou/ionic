@@ -116,8 +116,7 @@ export const PLATFORM_CONFIGS: { [key: string]: PlatformConfig } = {
       tapPolyfill: isIosUIWebView,
       virtualScrollEventAssist: isIosUIWebView,
       disableScrollAssist: isIos,
-      scrollPadding: scrollPadding,
-      keyboardResizes: keyboardResizes,
+      resizeAssist: keyboardResizes,
     },
     isMatch(plt: Platform) {
       return plt.isPlatformMatch('ios', ['iphone', 'ipad', 'ipod'], ['windows phone']);
@@ -249,14 +248,6 @@ function keyboardResizes(plt: Platform): boolean {
   }
   return false;
 }
-
-function scrollPadding(plt: Platform): boolean {
-  if (keyboardResizes(plt) === true) {
-    return false;
-  }
-  return null;
-}
-
 
 export const PlatformConfigToken = new OpaqueToken('PLTCONFIG');
 

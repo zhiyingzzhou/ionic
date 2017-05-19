@@ -77,7 +77,7 @@ export class TapClick {
       return true;
     }
 
-    let activatableEle = getActivatableTarget(ev.target);
+    const activatableEle = getActivatableTarget(ev.target);
     if (!activatableEle) {
       this.startCoord = null;
       return false;
@@ -95,7 +95,9 @@ export class TapClick {
   }
 
   pointerEnd(ev: any, pointerEventType: number) {
-    if (!this.dispatchClick) return;
+    if (!this.dispatchClick) {
+      return;
+    }
 
     runInDev(() => this.lastTouchEnd = Date.now());
 
@@ -114,7 +116,7 @@ export class TapClick {
     this.startCoord = null;
   }
 
-  pointerCancel(ev: UIEvent) {
+  pointerCancel(ev: any) {
     console.debug(`pointerCancel from ${ev.type} ${Date.now()}`);
 
     this.startCoord = null;

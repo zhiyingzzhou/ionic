@@ -77,7 +77,7 @@ export class BaseInput<T> extends Ion implements CommonInput<T> {
     private _defaultValue: T,
     public _form: Form,
     public _item: Item,
-    ngControl: NgControl
+    public _ngControl: NgControl
   ) {
     super(config, elementRef, renderer, name);
     _form && _form.register(this);
@@ -90,8 +90,8 @@ export class BaseInput<T> extends Ion implements CommonInput<T> {
     }
 
     // If the user passed a ngControl we need to set the valueAccessor
-    if (ngControl) {
-      ngControl.valueAccessor = this;
+    if (_ngControl) {
+      _ngControl.valueAccessor = this;
     }
   }
 
@@ -217,7 +217,7 @@ export class BaseInput<T> extends Ion implements CommonInput<T> {
 
     // immediately set focus
     this._isFocus = true;
-    console.debug('BaseInput: blurred:', this);
+    console.debug('BaseInput: focused:', this);
     this._form && this._form.setAsFocused(this);
     this._inputFocusChanged(true);
     this.ionFocus.emit(this);
@@ -235,7 +235,7 @@ export class BaseInput<T> extends Ion implements CommonInput<T> {
     assert(this._init, 'component was not initialized');
     assert(NgZone.isInAngularZone(), '_fireBlur: should be zoned');
     this._isFocus = false;
-    console.debug('BaseInput: focused:', this);
+    console.debug('BaseInput: blurred:', this);
     this._form && this._form.unsetAsFocused(this);
     this._inputFocusChanged(false);
     this.ionBlur.emit(this);
@@ -336,15 +336,22 @@ export class BaseInput<T> extends Ion implements CommonInput<T> {
    */
   _inputUpdated() {
     assert(this._init, 'component should be initialized');
-    this._item && this._item.setElementClass('input-has-value', this.isFocus() || this.hasValue());
+    const item = this._item;
+    if (item) {
+      setControlCss(item, this._ngControl);
+      this._item.setElementClass('input-has-value', this.isFocus() || this.hasValue());
+    }
   }
 }
 
-// function setControlCss(element: any, control: NgControl) {
-//   element.setElementClass('ng-untouched', control.untouched);
-//   element.setElementClass('ng-touched', control.touched);
-//   element.setElementClass('ng-pristine', control.pristine);
-//   element.setElementClass('ng-dirty', control.dirty);
-//   element.setElementClass('ng-valid', control.valid);
-//   element.setElementClass('ng-invalid', !control.valid);
-// }
+function setControlCss(element: Ion, control: NgControl) {
+  if (!control) {
+    return;
+  }
+  element.setElementClass('ng-untouched', control.untouched);
+  element.setElementClass('ng-touched', control.touched);
+  element.setElementClass('ng-pristine', control.pristine);
+  element.setElementClass('ng-dirty', control.dirty);
+  element.setElementClass('ng-valid', control.valid);
+  element.setElementClass('ng-invalid', !control.valid);
+}

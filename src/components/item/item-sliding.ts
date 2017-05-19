@@ -346,6 +346,7 @@ export class ItemSliding {
     }
     if (openAmount === 0) {
       this._tmr = platform.timeout(() => {
+        // change in the code
         this._setState(SlidingState.Disabled);
         this._tmr = null;
       }, 600);

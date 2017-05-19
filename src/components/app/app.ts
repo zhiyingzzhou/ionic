@@ -30,6 +30,7 @@ export class App {
   private _titleSrv: Title = new Title(DOCUMENT);
   private _rootNav: NavController = null;
   private _disableScrollAssist: boolean;
+  private _didScroll = false;
 
   /**
    * @hidden
@@ -86,6 +87,11 @@ export class App {
     // register this back button action with a default priority
     _plt.registerBackButtonAction(this.goBack.bind(this));
     this._disableScrollAssist = _config.getBoolean('disableScrollAssist', false);
+
+    const blurring = _config.getBoolean('inputBlurring', false);
+    if (blurring) {
+      this._enableInputBlurring();
+    }
 
     runInDev(() => {
       // During developement, navPop can be triggered by calling
@@ -179,6 +185,7 @@ export class App {
    */
   setScrolling() {
     this._scrollTime = Date.now() + ACTIVE_SCROLLING_TIME;
+    this._didScroll = true;
   }
 
   /**
@@ -287,6 +294,49 @@ export class App {
     // next get the active nav, check itself and climb up all
     // of its parent navs until it finds a nav that can pop
     return recursivePop(this.getActiveNav());
+  }
+
+  /**
+   * @hidden
+   */
+  _enableInputBlurring() {
+    let focused = true;
+    const self = this;
+    const platform = this._plt;
+
+    platform.registerListener(platform.doc(), 'focusin', onFocusin, { capture: true, zone: false, passive: true });
+    platform.registerListener(platform.doc(), 'touchend', onTouchend, { capture: false, zone: false, passive: true });
+
+    function onFocusin(ev: any) {
+      focused = true;
+    }
+    function onTouchend(ev: any) {
+      // if app did scroll return early
+      if (self._didScroll) {
+        self._didScroll = false;
+        return;
+      }
+      const active = <HTMLElement> self._plt.getActiveElement();
+      if (!active) {
+        return;
+      }
+      // only blur if the active element is a text-input or a textarea
+      const tag = active.tagName;
+      if (tag !== 'INPUT' && tag !== 'TEXTAREA') {
+        return;
+      }
+      // if the selected target is the active element, do not blur
+      if (ev.target === active) {
+        return;
+      }
+      focused = false;
+      // TODO: find a better way, why 50ms?
+      platform.timeout(() => {
+        if (!focused) {
+          active.blur();
+        }
+      }, 50);
+    }
   }
 
 }

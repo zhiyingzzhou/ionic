@@ -30,7 +30,6 @@ export class Keyboard {
   willHide = new EventEmitter<void>();
   didShow = new EventEmitter<void>();
   didHide = new EventEmitter<void>();
-  didChange = new EventEmitter<boolean>();
 
   eventsAvailable = false;
 
@@ -54,26 +53,28 @@ export class Keyboard {
 
   private listenV2(win: any) {
     this._plt.registerListener(win, 'keyboardWillShow', () => {
-      this._zone.run(() => this.willShow.emit());
+      this._zone.run(() => {
+        this.willShow.emit();
+      });
     }, { zone: false, passive: true });
 
     this._plt.registerListener(win, 'keyboardWillHide', () => {
       this._zone.run(() => {
         this.willHide.emit();
-        this.didChange.emit(false);
       });
-      this._plt.focusOutActiveElement();
+      // this._plt.focusOutActiveElement();
     }, { zone: false, passive: true });
 
     this._plt.registerListener(win, 'keyboardDidShow', () => {
       this._zone.run(() => {
         this.didShow.emit();
-        this.didChange.emit(true);
       });
     }, { zone: false, passive: true });
 
     this._plt.registerListener(win, 'keyboardDidHide', () => {
-      this._zone.run(() => this.didHide.emit());
+      this._zone.run(() => {
+        this.didHide.emit();
+      });
     }, { zone: false, passive: true });
     this.eventsAvailable = true;
   }

@@ -259,6 +259,7 @@ import { dateValueRange, renderDateTime, renderTextFormat, convertDataToISO, con
             'ion-button="item-cover" ' +
             '[attr.aria-labelledby]="_labelId" ' +
             '[attr.aria-disabled]="_disabled" ' +
+            '(click)="_click($event)" ' +
             'class="item-cover">' +
     '</button>',
   host: {
@@ -448,6 +449,7 @@ export class DateTime extends BaseInput<DateTimeData> implements AfterContentIni
    * @hidden
    */
   _inputUpdated() {
+    super._inputUpdated();
     this.updateText();
   }
 
@@ -473,12 +475,7 @@ export class DateTime extends BaseInput<DateTimeData> implements AfterContentIni
     return convertDataToISO(this.value);
   }
 
-  @HostListener('click', ['$event'])
   _click(ev: UIEvent) {
-    // do not continue if the click event came from a form submit
-    if (ev.detail === 0) {
-      return;
-    }
     ev.preventDefault();
     ev.stopPropagation();
     this.open();

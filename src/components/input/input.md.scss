@@ -56,7 +56,7 @@ $text-input-md-highlight-color-invalid:     $text-input-highlight-color-invalid 
 // Material Design Default Input
 // --------------------------------------------------
 
-.text-input-md {
+.input-md .text-input {
   @include margin($text-input-md-margin-top, $text-input-md-margin-end, $text-input-md-margin-bottom, $text-input-md-margin-start);
   @include padding(0);
 

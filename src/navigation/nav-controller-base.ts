@@ -1064,7 +1064,7 @@ export class NavControllerBase extends Ion implements NavController {
   }
 
   getActive(): ViewController {
-    return this._views[this._views.length - 1];
+    return this.last();
   }
 
   isActive(view: ViewController): boolean {
@@ -1090,8 +1090,9 @@ export class NavControllerBase extends Ion implements NavController {
   }
 
   last(): ViewController {
+    const views = this._views;
     // returns the last page in this nav controller's stack.
-    return this._views[this._views.length - 1];
+    return views[views.length - 1];
   }
 
   indexOf(view: ViewController): number {
@@ -1106,7 +1107,7 @@ export class NavControllerBase extends Ion implements NavController {
   /**
    * Return the stack of views in this NavController.
    */
-  getViews(): Array<ViewController> {
+  getViews(): ViewController[] {
     return this._views;
   }
 

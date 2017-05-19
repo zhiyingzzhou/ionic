@@ -71,7 +71,7 @@ $text-input-wp-highlight-color-invalid:     $text-input-highlight-color-invalid 
 // Windows Default Input
 // --------------------------------------------------
 
-.text-input-wp {
+.item-wp .text-input {
   @include margin($text-input-wp-margin-top, $text-input-wp-margin-end, $text-input-wp-margin-bottom, $text-input-wp-margin-start);
   @include padding($text-input-wp-padding-vertical, $text-input-wp-padding-horizontal);
 
@@ -119,8 +119,8 @@ $text-input-wp-highlight-color-invalid:     $text-input-highlight-color-invalid 
 // Windows Stacked & Floating Inputs
 // --------------------------------------------------
 
-.item-label-stacked .text-input-wp,
-.item-label-floating .text-input-wp,
+.item-label-stacked .input-wp .text-input,
+.item-label-floating .input-wp .text-input,
 .item-label-stacked .select-wp,
 .item-label-floating .select-wp {
   @include margin(8px, null, 8px, 0);

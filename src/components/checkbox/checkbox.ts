@@ -93,13 +93,6 @@ export class Checkbox extends BaseInput<boolean> implements IonicTapInput, OnDes
   /**
    * @hidden
    */
-  initFocus() {
-    this._elementRef.nativeElement.querySelector('button').focus();
-  }
-
-  /**
-   * @hidden
-   */
   @HostListener('click', ['$event'])
   _click(ev: UIEvent) {
     ev.preventDefault();
@@ -117,8 +110,8 @@ export class Checkbox extends BaseInput<boolean> implements IonicTapInput, OnDes
   /**
    * @hidden
    */
-  _inputCheckHasValue(val: boolean) {
-    this._item && this._item.setElementClass('item-checkbox-checked', val);
+  _inputUpdated() {
+    this._item && this._item.setElementClass('item-checkbox-checked', this._value);
   }
 
 }

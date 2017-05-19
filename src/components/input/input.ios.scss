@@ -56,7 +56,7 @@ $text-input-ios-highlight-color-invalid:   $text-input-highlight-color-invalid !
 // iOS Default Input
 // --------------------------------------------------
 
-.text-input-ios {
+.input-ios .text-input {
   @include margin($text-input-ios-margin-top, $text-input-ios-margin-end, $text-input-ios-margin-bottom, $text-input-ios-margin-start);
   @include padding(0);
 

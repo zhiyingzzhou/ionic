@@ -207,7 +207,7 @@ export class Keyboard {
     let isKeyInputEnabled = false;
     let unRegMouse: Function;
     let unRegTouch: Function;
-    const evOpts = { passive: true, zone: false };
+    const evOpts = { passive: true, zone: false, capture: true };
 
     function cssClass() {
       self._dom.write(() => {

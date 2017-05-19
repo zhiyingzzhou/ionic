@@ -134,6 +134,8 @@ export class RadioButton extends Ion implements IonicTapInput, OnDestroy, OnInit
     }
   }
 
+  initFocus() { }
+
   /**
    * @input {any} The value of the radio button. Defaults to the generated id.
    */
@@ -172,13 +174,6 @@ export class RadioButton extends Ion implements IonicTapInput, OnDestroy, OnInit
   set disabled(val: boolean) {
     this._disabled = isTrueProperty(val);
     this._item && this._item.setElementClass('item-radio-disabled', this._disabled);
-  }
-
-  /**
-   * @hidden
-   */
-  initFocus() {
-    this._elementRef.nativeElement.querySelector('button').focus();
   }
 
   /**

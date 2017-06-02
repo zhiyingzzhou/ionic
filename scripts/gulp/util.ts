@@ -303,10 +303,21 @@ export function writePolyfills(outputDirectory: string) {
     'node_modules/zone.js/dist/zone.js',
   ];
 
+  const ZONE_ONLY = [
+    'node_modules/zone.js/dist/zone.js',
+  ];
+
+  const TSLIB_AND_ZONE = [
+    'node_modules/zone.js/dist/zone.js',
+    'node_modules/tslib/tslib.js'
+  ];
+
   let promises = [];
   promises.push(bundlePolyfill(MODERN_ENTRIES, join(outputDirectory, 'polyfills.modern.js')));
   promises.push(bundlePolyfill(ALL_ENTRIES, join(outputDirectory, 'polyfills.js')));
   promises.push(bundlePolyfill(NG_ENTRIES, join(outputDirectory, 'polyfills.ng.js')));
+  promises.push(bundlePolyfill(ZONE_ONLY, join(outputDirectory, 'zone.js')));
+  promises.push(bundlePolyfill(TSLIB_AND_ZONE, join(outputDirectory, 'tslib-and-zone.js')));
 
   return Promise.all(promises);
 };

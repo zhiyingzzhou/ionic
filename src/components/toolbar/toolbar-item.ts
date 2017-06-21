@@ -10,7 +10,7 @@ import { Toolbar } from './toolbar';
  * @hidden
  */
 @Directive({
-  selector: 'ion-buttons,[menuToggle]'
+  selector: '[menuToggle]'
 })
 export class ToolbarItem extends Ion {
   inToolbar: boolean;
@@ -26,6 +26,7 @@ export class ToolbarItem extends Ion {
     this.inToolbar = !!(toolbar || navbar);
   }
 
+  // TODO this is not used
   set _buttons(buttons: any) {
     if (this.inToolbar) {
       buttons.forEach((button: any) => {

@@ -1,7 +1,9 @@
-import { Directive, Input, HostListener, Optional } from '@angular/core';
+import { Directive, ElementRef, Input, HostListener, Optional, Renderer } from '@angular/core';
 
+import { Config } from '../../config/config';
 import { MenuController } from '../app/menu-controller';
 import { Navbar } from '../toolbar/navbar';
+import { Toolbar } from '../toolbar/toolbar';
 import { ViewController } from '../../navigation/view-controller';
 
 /**
@@ -99,26 +101,34 @@ export class MenuToggle {
   /**
    * @hidden
    */
-  private _isButton: boolean;
+  private _inNavbar: boolean;
 
   /**
    * @hidden
    */
-  private _inNavbar: boolean;
+  private _inToolbar: boolean;
 
   constructor(
     private _menu: MenuController,
+    private _elementRef: ElementRef,
+    private _config: Config,
+    private _renderer: Renderer,
     @Optional() private _viewCtrl: ViewController,
-    @Optional() private _navbar: Navbar
+    @Optional() private _navbar: Navbar,
+    @Optional() private _toolbar: Toolbar
   ) {
-    this._isButton = false;
     this._inNavbar = !!_navbar;
+    this._inToolbar = !!(_toolbar || _navbar);
   }
 
   ngAfterContentInit() {
-    // Add the bar-button-menutoggle / button-menutoggle class
-    if (this._isButton) {
-      // this._button._setClass('menutoggle', true);
+    const nativeEle = this._elementRef.nativeElement;
+    const mode = this._config.get('mode');
+
+    if (nativeEle.tagName === 'ION-BUTTON' && this._inToolbar) {
+      this._renderer.setElementAttribute(nativeEle, 'button-type', 'bar-button');
+      this._renderer.setElementClass(nativeEle, `bar-button-menutoggle`, true);
+      this._renderer.setElementClass(nativeEle, `bar-button-menutoggle-${mode}`, true);
     }
   }
 

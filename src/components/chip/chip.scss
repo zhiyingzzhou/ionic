@@ -54,6 +54,10 @@ ion-chip {
   box-sizing: border-box;
 }
 
+ion-chip ion-button {
+  line-height: initial;
+}
+
 ion-chip .button {
   @include border-radius($chip-button-border-radius);
 

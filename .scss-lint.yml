@@ -5,6 +5,7 @@
 plugin_directories: ['.scss-linters']
 
 exclude:
+  - 'src/components/slides/slides-import.scss'
   - 'src/themes/ionic.mixins.scss'
   - 'src/themes/license.scss'
   - 'src/themes/util.scss'

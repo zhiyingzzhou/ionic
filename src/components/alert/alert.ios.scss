@@ -548,15 +548,18 @@ $alert-ios-checkbox-icon-transform:             rotate(45deg) !default;
   flex-wrap: $alert-ios-button-group-flex-wrap;
 }
 
+.alert-ios .alert-button-group ion-button {
+  flex: $alert-ios-button-flex;
+
+  min-width: $alert-ios-button-min-width;
+}
+
 .alert-ios .alert-button {
   @include margin($alert-ios-button-margin);
   @include border-radius($alert-ios-button-border-radius);
 
   overflow: hidden;
 
-  flex: $alert-ios-button-flex;
-
-  min-width: $alert-ios-button-min-width;
   height: $alert-ios-button-min-height;
 
   border-top: $alert-ios-button-border-width $alert-ios-button-border-style $alert-ios-button-border-color;
@@ -566,7 +569,7 @@ $alert-ios-checkbox-icon-transform:             rotate(45deg) !default;
   background-color: $alert-ios-button-background-color;
 }
 
-.alert-ios .alert-button:last-child {
+.alert-ios .alert-button-group ion-button:last-child .alert-button {
   border-right: 0;
   font-weight: $alert-ios-button-main-font-weight;
 }

@@ -607,20 +607,20 @@ $alert-wp-checkbox-icon-transform:             rotate(45deg) !default;
   }
 }
 
-.alert-wp .alert-button-group-vertical .alert-button {
+.alert-wp .alert-button-group-vertical ion-button {
   @include margin($alert-wp-button-group-vertical-margin-top, null, null, null);
+}
 
+.alert-wp .alert-button-group-vertical .alert-button {
   width: $alert-wp-button-group-vertical-width;
 }
 
-.alert-wp .alert-button-group-vertical .alert-button:first-child:not(:only-child) {
-  @include margin(0, 0, null, null);
+.alert-wp .alert-button-group ion-button {
+  min-width: $alert-wp-button-width;
 }
 
 .alert-wp .alert-button {
   @include border-radius($alert-wp-button-border-radius);
-
-  width: $alert-wp-button-width;
 
   font-weight: $alert-wp-button-font-weight;
   color: $alert-wp-button-text-color;
@@ -631,8 +631,12 @@ $alert-wp-checkbox-icon-transform:             rotate(45deg) !default;
   }
 }
 
-.alert-wp .alert-button:first-child:not(:only-child) {
+.alert-wp .alert-button-group ion-button:first-child:not(:only-child) {
   @include margin-horizontal(null, $alert-wp-button-margin-end);
+}
+
+.alert-wp .alert-button-group-vertical ion-button:first-child:not(:only-child) {
+  @include margin(0, 0, null, null);
 }
 
 .alert-wp .alert-button.activated {

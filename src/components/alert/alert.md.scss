@@ -591,6 +591,12 @@ $alert-md-checkbox-icon-transform:            rotate(45deg) !default;
   }
 }
 
+.alert-md .alert-button-group ion-button {
+  @include deprecated-variable(margin, $alert-md-button-margin) {
+    @include margin($alert-md-button-margin-top, $alert-md-button-margin-end, $alert-md-button-margin-bottom, $alert-md-button-margin-start);
+  }
+}
+
 .alert-md .alert-button {
   @include text-align($alert-md-button-text-align);
   @include border-radius($alert-md-button-border-radius);
@@ -603,10 +609,6 @@ $alert-md-checkbox-icon-transform:            rotate(45deg) !default;
   text-transform: $alert-md-button-text-transform;
   color: $alert-md-button-text-color;
   background-color: $alert-md-button-background-color;
-
-  @include deprecated-variable(margin, $alert-md-button-margin) {
-    @include margin($alert-md-button-margin-top, $alert-md-button-margin-end, $alert-md-button-margin-bottom, $alert-md-button-margin-start);
-  }
 
   @include deprecated-variable(padding, $alert-md-button-padding) {
     @include padding($alert-md-button-padding-top, $alert-md-button-padding-end, $alert-md-button-padding-bottom, $alert-md-button-padding-start);

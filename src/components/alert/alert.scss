@@ -84,12 +84,8 @@ ion-alert input {
   background: inherit;
 }
 
-.alert-button-group ion-button {
+.alert-button-group {
   display: flex;
-
-  flex-direction: row;
-
-  width: 100%;
 }
 
 .alert-button-group-vertical {
@@ -102,6 +98,8 @@ ion-alert input {
 
   z-index: 0;
   display: block;
+
+  width: 100%;
 
   font-size: $alert-button-font-size;
   line-height: $alert-button-line-height;

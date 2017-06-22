@@ -5,7 +5,7 @@ it('should open basic alert', function() {
 });
 
 it('should close with button click', function() {
-  element(by.css('.alert-button:last-child')).click();
+  element(by.css('.alert-button-group ion-button:last-child .alert-button')).click();
 });
 
 it('should open alert long message', function() {
@@ -13,7 +13,7 @@ it('should open alert long message', function() {
 });
 
 it('should close with button click', function() {
-  element(by.css('.alert-button:last-child')).click();
+  element(by.css('.alert-button-group ion-button:last-child .alert-button')).click();
 });
 
 it('should open alert multiple buttons', function() {
@@ -21,7 +21,7 @@ it('should open alert multiple buttons', function() {
 });
 
 it('should close with button click', function() {
-  element(by.css('.alert-button:last-child')).click();
+  element(by.css('.alert-button-group ion-button:last-child .alert-button')).click();
 });
 
 it('should open alert no message', function() {
@@ -29,7 +29,7 @@ it('should open alert no message', function() {
 });
 
 it('should close with button click', function() {
-  element(by.css('.alert-button:last-child')).click();
+  element(by.css('.alert-button-group ion-button:last-child .alert-button')).click();
 });
 
 it('should open confirm alert', function() {
@@ -37,7 +37,7 @@ it('should open confirm alert', function() {
 });
 
 it('should close with button click', function() {
-  element(by.css('.alert-button:last-child')).click();
+  element(by.css('.alert-button-group ion-button:last-child .alert-button')).click();
 });
 
 it('should open prompt alert', function() {
@@ -45,7 +45,7 @@ it('should open prompt alert', function() {
 });
 
 it('should close with button click', function() {
-  element(by.css('.alert-button:last-child')).click();
+  element(by.css('.alert-button-group ion-button:last-child .alert-button')).click();
 });
 
 it('should open radio alert', function() {
@@ -53,7 +53,7 @@ it('should open radio alert', function() {
 });
 
 it('should close with button click', function() {
-  element(by.css('.alert-button:last-child')).click();
+  element(by.css('.alert-button-group ion-button:last-child .alert-button')).click();
 });
 
 it('should open checkbox alert', function() {
@@ -61,7 +61,7 @@ it('should open checkbox alert', function() {
 });
 
 it('should close with button click', function() {
-  element(by.css('.alert-button:last-child')).click();
+  element(by.css('.alert-button-group ion-button:last-child .alert-button')).click();
 });
 
 it('should open and close fast close alert', function() {
@@ -73,7 +73,7 @@ it('should open disabled backdrop alert', function() {
 });
 
 it('should close with button click', function() {
-  element(by.css('.alert-button:last-child')).click();
+  element(by.css('.alert-button-group ion-button:last-child .alert-button')).click();
 });
 
 it('should open alert with mode', function() {
@@ -81,5 +81,5 @@ it('should open alert with mode', function() {
 });
 
 it('should close with button click', function() {
-  element(by.css('.alert-button:last-child')).click();
+  element(by.css('.alert-button-group ion-button:last-child .alert-button')).click();
 });

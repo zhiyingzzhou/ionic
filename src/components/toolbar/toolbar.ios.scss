@@ -293,13 +293,14 @@ $toolbar-button-ios-strong-font-weight:     600 !default;
   pointer-events: none;
 }
 
-.bar-button-ios[icon-only] {
+// TODO buttons with icon only should get this
+.bar-button-ios[slot="icon-only"] {
   @include padding(0);
 
   min-width: .9em;
 }
 
-.bar-button-ios[icon-only] ion-icon {
+.bar-button-ios ion-icon[slot="icon-only"] {
   @include padding(0, .1em);
 
   font-size: 1.8em;
@@ -344,7 +345,7 @@ $toolbar-button-ios-strong-font-weight:     600 !default;
 // iOS Toolbar Menu Toggle
 // --------------------------------------------------
 
-.bar-button-menutoggle-ios {
+button.bar-button-menutoggle-ios {
   @include margin(0, 6px);
   @include padding(0);
 
@@ -359,8 +360,8 @@ $toolbar-button-ios-strong-font-weight:     600 !default;
   }
 }
 
-.bar-button-menutoggle-ios[end],
-.bar-button-menutoggle-ios[right] {
+button.bar-button-menutoggle-ios[end],
+button.bar-button-menutoggle-ios[right] {
   order: map-get($toolbar-order-ios, menu-toggle-end);
 }
 

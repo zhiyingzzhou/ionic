@@ -312,11 +312,12 @@ $toolbar-button-md-strong-font-weight:   bold !default;
   pointer-events: none;
 }
 
-.bar-button-md[icon-only] {
+// TODO buttons with icon only should get this
+.bar-button-md[slot="icon-only"] {
   @include padding(0);
 }
 
-.bar-button-md[icon-only] ion-icon {
+.bar-button-md ion-icon[slot="icon-only"] {
   @include padding(0, .1em);
 
   min-width: 28px;
@@ -352,7 +353,7 @@ $toolbar-button-md-strong-font-weight:   bold !default;
 // Material Design Toolbar Menu Toggle
 // --------------------------------------------------
 
-.bar-button-menutoggle-md {
+button.bar-button-menutoggle-md {
   @include margin(0, 6px);
   @include padding(0, 2px);
 
@@ -367,8 +368,8 @@ $toolbar-button-md-strong-font-weight:   bold !default;
   font-size: 2.4rem;
 }
 
-.bar-button-menutoggle-md[end],
-.bar-button-menutoggle-md[right] {
+button.bar-button-menutoggle-md[end],
+button.bar-button-menutoggle-md[right] {
   @include margin(0, 2px);
 
   order: map-get($toolbar-order-md, menu-toggle-end);

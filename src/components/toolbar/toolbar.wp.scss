@@ -283,20 +283,20 @@ $toolbar-button-wp-strong-font-weight:   bold !default;
   pointer-events: none;
 }
 
-.bar-button-wp {
-  // TODO buttons with icon only should get this
+// TODO buttons with icon only should get this
+// .bar-button-wp {
   // @include padding(0);
+// }
 
-  ion-icon[slot="icon-only"] {
-    @include padding(0, .1em);
+.bar-button-wp ion-icon[slot="icon-only"] {
+  @include padding(0, .1em);
 
-    min-width: 28px;
+  min-width: 28px;
 
-    font-size: 1.8em;
-    line-height: .67;
+  font-size: 1.8em;
+  line-height: .67;
 
-    pointer-events: none;
-  }
+  pointer-events: none;
 }
 
 
@@ -324,10 +324,7 @@ $toolbar-button-wp-strong-font-weight:   bold !default;
 // Windows Toolbar Menu Toggle
 // --------------------------------------------------
 
-button.bar-button-menutoggle-wp {
-  @include margin(0, 6px);
-  @include padding(0, 2px);
-
+.bar-button-menutoggle-wp {
   order: map-get($toolbar-order-wp, menu-toggle-start);
 
   min-width: 44px;
@@ -339,13 +336,18 @@ button.bar-button-menutoggle-wp {
   }
 }
 
-button.bar-button-menutoggle-wp[end],
-button.bar-button-menutoggle-wp[right] {
+.bar-button-menutoggle-wp[end],
+.bar-button-menutoggle-wp[right] {
   @include margin(0, 2px);
 
   order: map-get($toolbar-order-wp, menu-toggle-end);
 
   min-width: 28px;
+}
+
+button.bar-button-menutoggle-wp {
+  @include margin(0, 6px);
+  @include padding(0, 2px);
 }
 
 

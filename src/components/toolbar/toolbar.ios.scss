@@ -345,10 +345,7 @@ $toolbar-button-ios-strong-font-weight:     600 !default;
 // iOS Toolbar Menu Toggle
 // --------------------------------------------------
 
-button.bar-button-menutoggle-ios {
-  @include margin(0, 6px);
-  @include padding(0);
-
+.bar-button-menutoggle-ios {
   order: map-get($toolbar-order-ios, menu-toggle-start);
 
   min-width: 36px;
@@ -360,9 +357,14 @@ button.bar-button-menutoggle-ios {
   }
 }
 
-button.bar-button-menutoggle-ios[end],
-button.bar-button-menutoggle-ios[right] {
+.bar-button-menutoggle-ios[end],
+.bar-button-menutoggle-ios[right] {
   order: map-get($toolbar-order-ios, menu-toggle-end);
+}
+
+button.bar-button-menutoggle-ios {
+  @include margin(0, 6px);
+  @include padding(0);
 }
 
 

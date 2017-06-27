@@ -150,7 +150,7 @@ $item-md-sliding-content-background: $list-md-background-color !default;
   @include margin($item-md-padding-icon-top, null, $item-md-padding-icon-bottom, 0);
 }
 
-.item-md .item-button {
+.item-md button.item-button {
   @include padding(0, .6em);
 
   height: 25px;
@@ -158,8 +158,8 @@ $item-md-sliding-content-background: $list-md-background-color !default;
   font-size: 1.2rem;
 }
 
-.item-md .item-button[icon-only] ion-icon,
-.item-md .item-button[icon-only] {
+.item-md button.item-button[icon-only] ion-icon,
+.item-md button.item-button[icon-only] {
   @include padding(0, 1px);
 }
 

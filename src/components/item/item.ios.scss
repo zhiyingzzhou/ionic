@@ -149,7 +149,7 @@ $item-ios-sliding-content-background:     $list-ios-background-color !default;
   @include margin($item-ios-padding-icon-top, null, $item-ios-padding-icon-bottom, 0);
 }
 
-.item-ios .item-button {
+.item-ios button.item-button {
   @include padding(0, .5em);
 
   height: 24px;
@@ -157,8 +157,8 @@ $item-ios-sliding-content-background:     $list-ios-background-color !default;
   font-size: 1.3rem;
 }
 
-.item-ios .item-button[icon-only] ion-icon,
-.item-ios .item-button[icon-only] {
+.item-ios button.item-button[icon-only] ion-icon,
+.item-ios button.item-button[icon-only] {
   @include padding(0, 1px);
 }
 

@@ -334,6 +334,14 @@ export class Item extends Ion {
     }
   }
 
+  ngOnInit() {
+    const buttons = this._elementRef.nativeElement.querySelectorAll('.item-inner ion-button');
+
+    for (var i = 0; i < buttons.length; i++) {
+      this._renderer.setElementClass(buttons[i], `item-button`, true);
+    }
+  }
+
   @HostListener('$ionStyle', ['$event'])
   itemStyle(ev: any) {
     ev.stopPropagation();

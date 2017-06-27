@@ -155,7 +155,7 @@ $item-wp-sliding-content-background: $list-wp-background-color !default;
   @include margin($item-wp-padding-icon-top, null, $item-wp-padding-icon-bottom, 0);
 }
 
-.item-wp .item-button {
+.item-wp button.item-button {
   @include padding(0, .6em);
 
   height: 25px;
@@ -163,8 +163,8 @@ $item-wp-sliding-content-background: $list-wp-background-color !default;
   font-size: 1.2rem;
 }
 
-.item-wp .item-button[icon-only] ion-icon,
-.item-wp .item-button[icon-only] {
+.item-wp button.item-button[icon-only] ion-icon,
+.item-wp button.item-button[icon-only] {
   @include padding(0, 1px);
 }
 

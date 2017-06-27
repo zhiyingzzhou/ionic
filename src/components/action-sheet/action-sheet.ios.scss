@@ -131,7 +131,7 @@ $action-sheet-ios-button-cancel-font-weight:            600 !default;
   background: $action-sheet-ios-button-background;
 }
 
-.action-sheet-ios .action-sheet-button:last-child {
+.action-sheet-ios ion-button:last-child .action-sheet-button {
   border-bottom-color: transparent;
 }
 

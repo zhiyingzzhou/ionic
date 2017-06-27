@@ -27,8 +27,9 @@ task('nightly', (done: (err: any) => void) => {
 
 // Release: prompt, update, publish
 task('release', (done: (err: any) => void) => {
-  runSequence('release.pullLatest',
-              'validate',
+  runSequence(
+              // 'release.pullLatest',
+              // 'validate',
               'release.prepareReleasePackage',
               'release.promptVersion',
               'release.update',
@@ -98,7 +99,7 @@ task('release.publishGithubRelease', (done: Function) => {
 });
 
 task('release.publishNpmRelease', (done: Function) => {
-  const npmCmd = spawn('npm', ['publish', DIST_BUILD_ROOT]);
+  const npmCmd = spawn('npm', ['publish', `--tag=${promptAnswers.tag}`, DIST_BUILD_ROOT]);
   npmCmd.stdout.on('data', function (data) {
     console.log(data.toString());
   });
@@ -120,26 +121,33 @@ task('release.promptVersion', (done: Function) => {
       message: 'What type of release is this?',
       choices: [
         {
-          name: 'Major:    Incompatible API changes',
+          name: 'Major:       Incompatible API changes',
           value: 'major'
         }, {
-          name: 'Minor:    Backwards-compatible functionality',
+          name: 'Minor:       Backwards-compatible functionality',
           value: 'minor'
         }, {
-          name: 'Patch:    Backwards-compatible bug fixes',
+          name: 'Patch:       Backwards-compatible bug fixes',
           value: 'patch'
         }, {
-          name: 'Premajor',
-          value: 'premajor'
-        }, {
-          name: 'Preminor',
-          value: 'preminor'
-        }, {
-          name: 'Prepatch',
-          value: 'prepatch'
-        }, {
-          name: 'Prerelease',
+          name: 'Prerelease:  Unstable version to share early features',
           value: 'prerelease'
+        }
+      ]
+    }, {
+      type: 'list',
+      name: 'tag',
+      message: 'Which dist-tag should this publish under?',
+      choices: [
+        {
+          name: 'Latest',
+          value: 'latest'
+        }, {
+          name: 'Beta',
+          value: 'beta'
+        }, {
+          name: 'Canary',
+          value: 'canary'
         }
       ]
     }, {
@@ -157,7 +165,7 @@ task('release.promptVersion', (done: Function) => {
       ],
       message: function(answers) {
         var SEP = '---------------------------------';
-        console.log('\n' + SEP + '\n' + getVersion(answers) + '\n' + SEP + '\n');
+        console.log('\n' + SEP + '\n' + answers.tag + ': ' + getVersion(answers) + '\n' + SEP + '\n');
         return 'Are you sure you want to proceed with the release version above?';
       }
     }

@@ -279,7 +279,8 @@ export function writePolyfills(outputDirectory: string) {
     'node_modules/core-js/es7/reflect.js',
     'node_modules/core-js/es6/reflect.js',
     'node_modules/zone.js/dist/zone.js',
-    'scripts/polyfill/polyfill.dom.js'
+    'scripts/polyfill/polyfill.dom.js',
+    'node_modules/tslib/tslib.js'
   ];
 
   const ALL_ENTRIES = [
@@ -302,11 +303,17 @@ export function writePolyfills(outputDirectory: string) {
     'node_modules/core-js/es6/weak-set.js',
     'node_modules/core-js/es7/reflect.js',
     'node_modules/zone.js/dist/zone.js',
-    'scripts/polyfill/polyfill.dom.js'
+    'scripts/polyfill/polyfill.dom.js',
+    'node_modules/tslib/tslib.js'
   ];
 
   const NG_ENTRIES = [
     'node_modules/core-js/es7/reflect.js',
+    'node_modules/zone.js/dist/zone.js',
+    'node_modules/tslib/tslib.js'
+  ];
+
+  const ZONE_ONLY = [
     'node_modules/zone.js/dist/zone.js',
   ];
 
@@ -314,9 +321,35 @@ export function writePolyfills(outputDirectory: string) {
   promises.push(bundlePolyfill(MODERN_ENTRIES, join(outputDirectory, 'polyfills.modern.js')));
   promises.push(bundlePolyfill(ALL_ENTRIES, join(outputDirectory, 'polyfills.js')));
   promises.push(bundlePolyfill(NG_ENTRIES, join(outputDirectory, 'polyfills.ng.js')));
+  promises.push(bundlePolyfill(ZONE_ONLY, join(outputDirectory, 'polyfills.zone.js')));
 
-  return Promise.all(promises);
+  return Promise.all(promises).then(() => {
+    const promises = [];
+    promises.push(appendZoneUpdatesToPolyfill(join(outputDirectory, 'polyfills.modern.js')));
+    promises.push(appendZoneUpdatesToPolyfill(join(outputDirectory, 'polyfills.js')));
+    promises.push(appendZoneUpdatesToPolyfill(join(outputDirectory, 'polyfills.ng.js')));
+    promises.push(appendZoneUpdatesToPolyfill(join(outputDirectory, 'polyfills.zone.js')));
+    return Promise.all(promises);
+  });
 };
+
+function appendZoneUpdatesToPolyfill(filePath: string) {
+  return readFileAsync(filePath).then((fileContent: string) => {
+    const updated = disablePartsOfZone(fileContent);
+    return writeFileAsync(filePath, updated);
+  });
+}
+
+function disablePartsOfZone(fileContent: string) {
+  const zoneContent = `__Zone_disable_Error = true;
+    __Zone_disable_on_property = true;
+    __Zone_disable_geolocation = true;
+    __Zone_disable_toString = true;
+    __Zone_disable_blocking = true;
+    __Zone_disable_PromiseRejectionEvent = true;`;
+  return `${zoneContent}
+  ${fileContent}`;
+}
 
 function bundlePolyfill(pathsToIncludeInPolyfill: string[], outputPath: string) {
   return rollup({

@@ -28,6 +28,11 @@ export class Icon {
   @State() iconMode: string = '';
 
   /**
+   * @input {string} Specifies the svg to use for the icon.
+   */
+  @State() iconSvg: string = '';
+
+  /**
    * @input {string} Specifies which icon to use. The appropriate icon will be used based on the mode.
    * For more information, see [Ionicons](/docs/ionicons/).
    */
@@ -54,6 +59,21 @@ export class Icon {
    * @input {boolean} If true, the icon is hidden.
    */
   @Prop() hidden: boolean = false;
+
+  /**
+   * 
+   * @input {string} Path to the svg files for icons
+   */
+  @Prop() assetsDir: string = 'src'
+
+
+  fetchSvg(icon: string) {
+    fetch(`${this.assetsDir}/${icon}.svg`).then((response) => {
+      return response.text();
+    }).then((data) => {
+      this.iconSvg = data;
+    })
+  }
 
   getElementClass(): string {
     let iconName: string;
@@ -97,6 +117,8 @@ export class Icon {
       .replace('-', ' ');
     this.label = label;
 
+    this.fetchSvg(iconName);
+
     return `ion-${iconName}`;
   }
 
@@ -123,6 +145,9 @@ export class Icon {
   }
 
   render() {
-    return <slot></slot>;
+    return(
+      <div innerHTML={this.iconSvg}>
+      </div>
+    );
   }
 }

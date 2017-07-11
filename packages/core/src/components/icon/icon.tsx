@@ -66,12 +66,29 @@ export class Icon {
    */
   @Prop() assetsDir: string = 'src'
 
+  fakeFetch(url: string): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const request = new XMLHttpRequest();
+
+      request.addEventListener('load', function () {
+        resolve(this.responseText);
+      });
+
+      request.addEventListener('error', function () {
+        reject(`error: ${this.statusText} / ${this.status}`);
+      });
+
+      request.open('GET', url, true);
+      request.send();
+    });
+  }
+
 
   fetchSvg(icon: string) {
-    fetch(`${this.assetsDir}/${icon}.svg`).then((response) => {
-      return response.text();
-    }).then((data) => {
+    this.fakeFetch(`${this.assetsDir}/${icon}.svg`).then((data) => {
       this.iconSvg = data;
+    }).catch((err) =>  {
+      console.error('Icon could not be loaded:', err);
     })
   }
 
